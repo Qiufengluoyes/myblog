@@ -3,9 +3,9 @@ title: 好久不见
 published: 2025-07-31
 description: 'Long time no see —— 好久不见：博客的新旅途就此扬帆起航！'
 image: ''
-tags: [公告]
+tags: [好久不见]
 category: '公告'
-draft: false 
+draft: true
 ---
 **ヾ(≧▽≦*)o**
 
