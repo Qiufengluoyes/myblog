@@ -21,7 +21,7 @@ export const siteConfig: SiteConfig = {
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
 		credit: {
 			enable: true, // Display the credit text of the banner image
-			text: "秀美壮丽的山河 | 日出时分，美丽的喀斯特山脉鸟瞰图，中国桂林 (© zhaojiankang/Getty Images)", // Credit text to be displayed
+			text: "日出时分，美丽的喀斯特山脉鸟瞰图，中国桂林 (© zhaojiankang/Getty Images)", // Credit text to be displayed
 			url: "https://bing.ee123.net/detail/20250505", // (Optional) URL link to the original artwork or artist's page
 		},
 	},
