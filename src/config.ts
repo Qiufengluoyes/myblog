@@ -81,7 +81,7 @@ export const profileConfig: ProfileConfig = {
 		},
 		{
 			name: "开往-友链接力",
-			icon: "ic:twotone-directions-subway-filled",
+			icon: "uil:subway",
 			url: "https://www.travellings.cn/plain.html",
 		},
 	],
