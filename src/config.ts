@@ -49,6 +49,11 @@ export const navBarConfig: NavBarConfig = {
 			url: "https://status.feng1026.top", // Internal links should not include the base path, as it is automatically added
 			external: true, // Show an external link icon and will open in a new tab
 		},
+		{
+			name: "开往",
+			url: "https://www.travellings.cn/plain.html", // Internal links should not include the base path, as it is automatically added
+			external: true, // Show an external link icon and will open in a new tab
+		},
 	],
 };
 
@@ -59,10 +64,10 @@ export const profileConfig: ProfileConfig = {
 	links: [
 		{
 			name: "哔哩哔哩",
-			icon: "fa6-brands:bilibili", // Visit https://icones.js.org/ for icon codes
+			icon: "mingcute:bilibili-line", // Visit https://icones.js.org/ for icon codes
 			// You will need to install the corresponding icon set if it's not already included
 			// `pnpm add @iconify-json/<icon-set-name>`
-			url: "https://bilibili.com",
+			url: "https://space.bilibili.com/1735270180",
 		},
 		{
 			name: "GitHub",
@@ -72,7 +77,12 @@ export const profileConfig: ProfileConfig = {
 		{
 			name: "Steam",
 			icon: "mdi:steam",
-			url: "https://store.steampowered.com",
+			url: "https://steamcommunity.com/id/qiufengluoye44/",
+		},
+		{
+			name: "开往-友链接力",
+			icon: "ic:twotone-directions-subway-filled",
+			url: "https://www.travellings.cn/plain.html",
 		},
 	],
 };
