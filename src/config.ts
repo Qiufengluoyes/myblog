@@ -67,7 +67,7 @@ export const profileConfig: ProfileConfig = {
 		{
 			name: "GitHub",
 			icon: "tabler:brand-github",
-			url: "https://github.com/saicaca/fuwari",
+			url: "https://github.com/Qiufengluoyes",
 		},
 		{
 			name: "Steam",
