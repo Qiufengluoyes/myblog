@@ -18,5 +18,3 @@ draft: false
 > 何気ない日常で、ほんの少しの奇跡を見つける物語。
 > 和你的日常，就是奇迹。
 > **——《蔚蓝档案》**
-
-[![阿洛娜](https://s21.ax1x.com/2025/07/31/pVtNeFP.md.png)](https://s21.ax1x.com/2025/07/31/pVtNeFP.md.png)
