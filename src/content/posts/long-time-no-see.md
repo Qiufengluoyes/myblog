@@ -2,7 +2,7 @@
 title: 好久不见
 published: 2025-07-31
 description: 'Long time no see —— 好久不见：博客的新旅途就此扬帆起航！'
-image: ''
+image: 'https://s21.ax1x.com/2025/07/31/pVtNeFP.png'
 tags: [好久不见]
 category: '公告'
 draft: false
@@ -16,7 +16,7 @@ draft: false
 最后，希望这个博客也能够成为我源源不断的创作动力、分享动力，让我与您在网络上无声的电波——也能成为**奇迹**。
 
 > 何気ない日常で、ほんの少しの奇跡を見つける物語。
->
 > 和你的日常，就是奇迹。
->
 > **——《蔚蓝档案》**
+
+[![阿洛娜](https://s21.ax1x.com/2025/07/31/pVtNeFP.md.png)](https://s21.ax1x.com/2025/07/31/pVtNeFP.md.png)
