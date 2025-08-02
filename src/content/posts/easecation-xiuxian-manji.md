@@ -1,13 +1,13 @@
 ---
 title: Easecation 休闲段位满级
 published: 2025-08-03
-description: ''
-image: 'https://s21.ax1x.com/2025/08/02/pVN20EV.png'
+description: '经过艰辛万苦，终于第一次把 Easecation 休闲模式的段位升至了满级 ♪(^∇^*)'
+image: 'https://fengoss.s3.bitiful.net/easecation-xiuxian-manji.webp?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=yDA8B2NkMm5vlgVgnKoJO2Iw%2F20250802%2F%2Fs3%2Faws4_request&X-Amz-Date=20250802T154434Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=4b35a5da897f344973c65c548566a70cbfba9b46dc3b050281f5047f810a9ac3'
 tags: [Minecraft, Easecation]
 category: '说说'
 draft: false
 ---
-:::文章信息
+:::note
 本篇文章（说说）为**枫落丰源原创**，转载前请提前声明本篇文章（说说）的标题及链接。
 本篇文章（说说）遵循 [**CC BY-NC-SA 4.0 协议**](https://creativecommons.org/licenses/by-nc-sa/4.0/)，转载前请务必阅读、明确此协议的条款及规定。
 :::
