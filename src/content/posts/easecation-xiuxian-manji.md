@@ -1,5 +1,5 @@
 ---
-title: Easecation 休闲段位满级
+title: Easecation 休闲段位达到满级
 published: 2025-08-02
 description: '历经艰辛万苦，终于第一次把 Easecation 休闲模式的段位升至了满级 ♪(^∇^*)'
 image: 'https://s21.ax1x.com/2025/08/03/pVN4NTI.webp'
