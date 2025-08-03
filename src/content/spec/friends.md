@@ -5,6 +5,8 @@
 - [x] 已经启用全站强制 HTTPS
 
 - [x] 申请前请先添加本站为友情链接
+  
+申请邮箱：<Grovecxk@outlook.com>
 
 ---
 
