@@ -17,12 +17,12 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: true,
-		src: "assets/images/banner.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
-		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
+		src: "https://bing.img.run/uhd.php", 
+		position: "center", 
 		credit: {
-			enable: true, // Display the credit text of the banner image
-			text: "日出时分，美丽的喀斯特山脉鸟瞰图，中国桂林", // Credit text to be displayed
-			url: "https://bing.ee123.net/detail/20250505", // (Optional) URL link to the original artwork or artist's page
+			enable: true, 
+			text: "必应每日壁纸", 
+			url: "https://www.bing.com",
 		},
 	},
 	toc: {
