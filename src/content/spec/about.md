@@ -26,7 +26,7 @@
 
 这一次，博客主要使用了 [**Fuwari**](https://github.com/saicaca/fuwari "Fuwari") 开源主题，主体框架为 **Astro**，使用 **Vercel** 部署，**VS Code** 编辑并提交相关博客文章及代码改动。
 
->!（有了 PC 真是方便多了）
+（有了 PC 真是方便多了）
 
 ## 为什么我要搭建博客
 
