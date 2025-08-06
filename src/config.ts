@@ -17,12 +17,12 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: true,
-		src: "https://bing.img.run/uhd.php", 
+		src: "https://cn.bing.com/th?id=OHR.CaliforniaTidepool_ZH-CN6273815361_UHD.jpg", 
 		position: "center", 
 		credit: {
 			enable: true, 
-			text: "必应每日壁纸", 
-			url: "https://www.bing.com",
+			text: "必应每日壁纸 独家精选", 
+			url: "https://bing.ee123.net/detail/20250805",
 		},
 	},
 	toc: {
