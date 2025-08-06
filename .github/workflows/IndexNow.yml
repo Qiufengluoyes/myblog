@@ -11,5 +11,5 @@ jobs:
       - name: indexnow-action
         uses: bojieyang/indexnow-action@v2
         with:
-          sitemap-location: 'https://feng1026.top/sitemap-0.xml'
+          sitemap-location: 'https://blog.feng1026.top/sitemap-0.xml'
           key: d387f8b8e9a647cb8e42113f38d4cbaa
