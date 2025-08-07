@@ -9,7 +9,7 @@ draft: false
 pinned: true
 ---
 :::note
-本篇文章为**枫落丰源原创**，转载前请遵循 [**CC BY-NC-SA 4.0 协议**](https://creativecommons.org/licenses/by-nc-sa/4.0/) ，并提前声明本篇文章的标题及链接。
+本篇文章为**枫落丰源原创**，转载前请遵循 [**CC BY-NC-SA 4.0 协议**](https://creativecommons.org/licenses/by-nc-sa/4.0/) ，并声明本篇文章的标题及链接。
 :::
 
 欢迎各位朋友再次访问我的博客ヾ(≧▽≦*)o
