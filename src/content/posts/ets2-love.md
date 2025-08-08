@@ -2,7 +2,7 @@
 title: 欧洲卡车模拟 2——深夜的欧洲公路，是年轻人逃离快节奏生活的精神防空洞
 published: 2025-08-06
 description: '欧洲卡车模拟 2，一个开卡车的「慢」游戏，咋就成了游戏界的「常青树」，甚至破圈吸引了更多人来「摸鱼」兜风？'
-image: 'https://image.feng1026.top/ets2-love-0.png'
+image: 'https://image.091026.xyz/ets2-love-0.png'
 tags: [欧洲卡车模拟 2]
 category: '游戏杂谈'
 draft: true

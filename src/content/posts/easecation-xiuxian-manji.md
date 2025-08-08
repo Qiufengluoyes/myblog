@@ -2,7 +2,7 @@
 title: Easecation 休闲段位达到满级
 published: 2025-08-02
 description: '历经艰辛万苦，终于第一次把 Easecation 休闲模式的段位升至了满级 ♪(^∇^*)'
-image: 'https://image.feng1026.top/easecation-xiuxian-manji.webp'
+image: 'https://image.091026.xyz/easecation-xiuxian-manji.webp'
 tags: [Minecraft, Easecation]
 category: '说说'
 draft: false
