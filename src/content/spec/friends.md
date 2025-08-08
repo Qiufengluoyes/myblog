@@ -4,6 +4,8 @@
 
 - [x] 已经启用全站强制 HTTPS
 
+- [x] 博客访问速度（使用Cloudflare除外）、性能优化较好
+
 - [x] 申请前请先添加本站为友情链接
   
 申请邮箱：<Grovecxk@outlook.com>
