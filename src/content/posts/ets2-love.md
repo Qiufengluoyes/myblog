@@ -5,7 +5,7 @@ description: '欧洲卡车模拟 2，一个开卡车的「慢」游戏，咋就�
 image: 'https://image.feng1026.top/ets2-love-0.png'
 tags: [欧洲卡车模拟 2]
 category: '游戏杂谈'
-draft: false
+draft: true
 ---
 :::note
 本篇文章为**枫落丰源原创**，转载前请遵循 [**CC BY-NC-SA 4.0 协议**](https://creativecommons.org/licenses/by-nc-sa/4.0/) ，并声明本篇文章的标题及链接。
