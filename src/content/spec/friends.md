@@ -15,6 +15,6 @@
 ```txt
 名称: 枫落丰源
 描述: 和你的日常，就是奇迹
-链接: https://feng1026.top/
-头像: https://feng1026.top/_astro/avatar.BhH3BrDQ_Z1PPS91.webp
+链接: https://blog.feng1026.top/（建议，后续根域名不会进行解析） 或 https://feng1026.top/
+头像: https://blog.feng1026.top/_astro/avatar.BhH3BrDQ_Z1PPS91.webp
 ```
