@@ -7,7 +7,7 @@ tags: [说说, 中学, 超短篇幅]
 category: '回忆'
 draft: false
 ---
-只是一个回忆小分享而已啦
+只是一个回忆小分享而已啦（后续会继续添加图片哦）
 
 ![2](https://image.091026.xyz/middle-school-photos-2.webp)
 
