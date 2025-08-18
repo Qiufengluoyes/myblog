@@ -3,7 +3,7 @@ title: 图片回忆
 published: 2025-08-18
 description: '中学图片分享回忆（顺带一提，欧卡 2 的新文章目前写不完力，20号就要开学）'
 image: 'https://image.091026.xyz/middle-school-photos-0.webp'
-tags: [中学]
+tags: [说说, 中学, 超短篇幅]
 category: '回忆'
 draft: false
 ---
