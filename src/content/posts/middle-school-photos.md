@@ -17,6 +17,10 @@ draft: false
 
 ![5](https://image.091026.xyz/middle-school-photos-5.webp)
 
+![7](https://image.091026.xyz/middle-school-photos-7.webp)
+
+![8](https://image.091026.xyz/middle-school-photos-8.webp)
+
 ![6](https://image.091026.xyz/middle-school-photos-6.webp)
 
 ![1](https://image.091026.xyz/middle-school-photos-1.webp)
