@@ -17,12 +17,12 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: true,
-		src: "https://cn.bing.com/th?id=OHR.CaliforniaTidepool_ZH-CN6273815361_UHD.jpg", 
+		src: "https://image.091026.xyz/image0.webp", 
 		position: "center", 
 		credit: {
 			enable: true, 
-			text: "必应每日壁纸 独家精选", 
-			url: "https://bing.ee123.net/detail/20250805",
+			text: "《蔚蓝档案》栗村 爱莉", 
+			url: "https://kivo.wiki/data/character/10",
 		},
 	},
 	toc: {
