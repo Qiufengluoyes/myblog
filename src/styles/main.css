@@ -142,8 +142,8 @@
 
 @font-face {
     font-family: 'MiSans';
-    src: url('/fonts/MiSans-Normal.woff2') format('woff2');
-    font-weight: 400;
+    src: url('/fonts/MiSans-Medium.woff2') format('woff2');
+    font-weight: 500;
     font-style: normal;
     font-display: swap;
 }
