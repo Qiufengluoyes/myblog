@@ -6,7 +6,7 @@ image: 'https://image.091026.xyz/ets2-love-pv.webp'
 tags: [欧洲卡车模拟 2]
 category: '文章预告'
 draft: false 
-pinned: true
+pinned: false
 ---
 准备好阅读本博客改版后的第一篇文章了吗？
 
