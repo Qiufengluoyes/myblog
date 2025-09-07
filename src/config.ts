@@ -12,17 +12,17 @@ export const siteConfig: SiteConfig = {
 	subtitle: "和你的日常，就是奇迹",
 	lang: "zh_CN", // 'en', 'zh_CN', 'zh_TW', 'ja', 'ko', 'es', 'th', 'vi'
 	themeColor: {
-		hue: 190, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
+		hue: 220, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
 		fixed: false, // Hide the theme color picker for visitors
 	},
 	banner: {
 		enable: true,
-		src: "https://image.091026.xyz/img.webp", 
+		src: "https://image.091026.xyz/img0.webp", 
 		position: "center", 
 		credit: {
 			enable: true, 
-			text: "《蔚蓝档案》栗村 爱莉", 
-			url: "https://kivo.wiki/data/character/10",
+			text: "初音未来-Deco27", 
+			url: "https://www.bilibili.com/video/BV1JThqzwEGq/",
 		},
 	},
 	toc: {
