@@ -2,12 +2,11 @@
 title: LiteLoaderQQNT 插件的个人使用及心得
 published: 2025-09-07
 description: '在暑假，我偶然了解到了 LiteLoaderQQNT 这样一个 QQ 外置插件，该插件具有强大的功能拓展，大大提高了 NTQQ 的可玩性。经过本人一个月的使用，特此在博客发表简短的个人心得'
-image: ''
+image: 'https://image.091026.xyz/Use-LiteLoaderQQNT-0.webp'
 tags: [QQ, LiteLoaderQQNT]
 category: '技术'
 draft: false 
 lang: ''
-
 ---
 
 :::note
