@@ -15,6 +15,7 @@ import remarkDirective from "remark-directive"; /* Handle directives */
 import remarkGithubAdmonitionsToDirectives from "remark-github-admonitions-to-directives";
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
+import remarkImageCaption from "./src/plugins/remark-image-caption.ts";
 import { expressiveCodeConfig } from "./src/config.ts";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
@@ -110,6 +111,13 @@ export default defineConfig({
 			remarkExcerpt,
 			remarkGithubAdmonitionsToDirectives,
 			remarkDirective,
+			[
+        		remarkImageCaption,
+        		{
+          			className: 'image-caption',
+        		},
+      		],
+			remarkImageWidth,
 			remarkSectionize,
 			parseDirectiveNode,
 		],

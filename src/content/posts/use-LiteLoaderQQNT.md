@@ -23,7 +23,7 @@ lang: ''
 
 于是自己动手丰衣足食，在网络上查找教程，了解并下载安装了 LiteLoaderQQNT 来缓解我修改背景的燃眉之急。
 
-![QQNT 主题更改界面](https://image.091026.xyz/Use-LiteLoaderQQNT-1.webp)
+![](https://image.091026.xyz/Use-LiteLoaderQQNT-1.webp "QQNT 主题更改界面")
 
 ## LiteLoaderQQNT 的安装
 
