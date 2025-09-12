@@ -117,7 +117,6 @@ export default defineConfig({
           			className: 'image-caption',
         		},
       		],
-			remarkImageWidth,
 			remarkSectionize,
 			parseDirectiveNode,
 		],
