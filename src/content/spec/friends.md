@@ -15,5 +15,5 @@
 名称: 枫落丰源
 描述: 和你的日常，就是奇迹
 链接: https://blog.feng1026.top/
-头像: https://blog.feng1026.top/_astro/avatar.BhH3BrDQ_Z1PPS91.webp
+头像: https://blog.feng1026.top/avatar.jpg
 ```
