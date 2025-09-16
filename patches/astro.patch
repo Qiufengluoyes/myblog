@@ -1,5 +1,5 @@
 diff --git a/dist/assets/utils/transformToPath.js b/dist/assets/utils/transformToPath.js
-index 22057cb412da95f5cb764d5e26e683b685f2b5f8..9ac380b62245628127696d2e121178db56a15183 100644
+index 22057cb412da95f5cb764d5e26e683b685f2b5f8..1d8de2c6f573f51bc65f0effe971e5797ff2fe8d 100644
 --- a/dist/assets/utils/transformToPath.js
 +++ b/dist/assets/utils/transformToPath.js
 @@ -14,7 +14,7 @@ function propsToFilename(filePath, transform, hash) {
@@ -7,7 +7,7 @@ index 22057cb412da95f5cb764d5e26e683b685f2b5f8..9ac380b62245628127696d2e121178db
    const prefixDirname = isESMImportedImage(transform.src) ? dirname(filePath) : "";
    let outputExt = transform.format ? `.${transform.format}` : ext;
 -  return `${prefixDirname}/${filename}_${hash}${outputExt}`;
-+  return decodeURIComponent(`${prefixDirname}/${filename}${ext}`);
++  return `${prefixDirname}/${filename}${ext}`;
  }
  function hashTransform(transform, imageService, propertiesToHash) {
    const hashFields = propertiesToHash.reduce(

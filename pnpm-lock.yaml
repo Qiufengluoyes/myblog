@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   astro:
-    hash: w2yoj546lyufy4tk7sdx3uhowa
+    hash: zvgi3yybwcilhwsulirdsm7a6q
     path: patches/astro.patch
 
 importers:
@@ -24,10 +24,10 @@ importers:
         version: 3.5.1
       '@astrojs/svelte':
         specifier: 7.1.1
-        version: 7.1.1(@types/node@24.3.1)(astro@5.13.7(patch_hash=w2yoj546lyufy4tk7sdx3uhowa)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0))(jiti@1.21.7)(lightningcss@1.29.3)(sass@1.80.4)(stylus@0.64.0)(svelte@5.38.10)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)
+        version: 7.1.1(@types/node@24.3.1)(astro@5.13.7(patch_hash=zvgi3yybwcilhwsulirdsm7a6q)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0))(jiti@1.21.7)(lightningcss@1.29.3)(sass@1.80.4)(stylus@0.64.0)(svelte@5.38.10)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)
       '@astrojs/tailwind':
         specifier: ^6.0.2
-        version: 6.0.2(astro@5.13.7(patch_hash=w2yoj546lyufy4tk7sdx3uhowa)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0))(tailwindcss@3.4.17)
+        version: 6.0.2(astro@5.13.7(patch_hash=zvgi3yybwcilhwsulirdsm7a6q)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0))(tailwindcss@3.4.17)
       '@expressive-code/core':
         specifier: ^0.41.3
         version: 0.41.3
@@ -69,10 +69,10 @@ importers:
         version: 0.5.16(tailwindcss@3.4.17)
       astro:
         specifier: 5.13.7
-        version: 5.13.7(patch_hash=w2yoj546lyufy4tk7sdx3uhowa)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)
+        version: 5.13.7(patch_hash=zvgi3yybwcilhwsulirdsm7a6q)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)
       astro-expressive-code:
         specifier: ^0.41.3
-        version: 0.41.3(astro@5.13.7(patch_hash=w2yoj546lyufy4tk7sdx3uhowa)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0))
+        version: 0.41.3(astro@5.13.7(patch_hash=zvgi3yybwcilhwsulirdsm7a6q)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0))
       astro-icon:
         specifier: ^1.1.5
         version: 1.1.5
@@ -5425,10 +5425,10 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.25.76
 
-  '@astrojs/svelte@7.1.1(@types/node@24.3.1)(astro@5.13.7(patch_hash=w2yoj546lyufy4tk7sdx3uhowa)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0))(jiti@1.21.7)(lightningcss@1.29.3)(sass@1.80.4)(stylus@0.64.0)(svelte@5.38.10)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)':
+  '@astrojs/svelte@7.1.1(@types/node@24.3.1)(astro@5.13.7(patch_hash=zvgi3yybwcilhwsulirdsm7a6q)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0))(jiti@1.21.7)(lightningcss@1.29.3)(sass@1.80.4)(stylus@0.64.0)(svelte@5.38.10)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)':
     dependencies:
       '@sveltejs/vite-plugin-svelte': 5.1.1(svelte@5.38.10)(vite@6.3.6(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(yaml@2.7.0))
-      astro: 5.13.7(patch_hash=w2yoj546lyufy4tk7sdx3uhowa)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)
+      astro: 5.13.7(patch_hash=zvgi3yybwcilhwsulirdsm7a6q)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)
       svelte: 5.38.10
       svelte2tsx: 0.7.43(svelte@5.38.10)(typescript@5.9.2)
       typescript: 5.9.2
@@ -5447,9 +5447,9 @@ snapshots:
       - tsx
       - yaml
 
-  '@astrojs/tailwind@6.0.2(astro@5.13.7(patch_hash=w2yoj546lyufy4tk7sdx3uhowa)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0))(tailwindcss@3.4.17)':
+  '@astrojs/tailwind@6.0.2(astro@5.13.7(patch_hash=zvgi3yybwcilhwsulirdsm7a6q)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0))(tailwindcss@3.4.17)':
     dependencies:
-      astro: 5.13.7(patch_hash=w2yoj546lyufy4tk7sdx3uhowa)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)
+      astro: 5.13.7(patch_hash=zvgi3yybwcilhwsulirdsm7a6q)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)
       autoprefixer: 10.4.21(postcss@8.5.3)
       postcss: 8.5.3
       postcss-load-config: 4.0.2(postcss@8.5.3)
@@ -7289,9 +7289,9 @@ snapshots:
       get-intrinsic: 1.3.0
       is-array-buffer: 3.0.5
 
-  astro-expressive-code@0.41.3(astro@5.13.7(patch_hash=w2yoj546lyufy4tk7sdx3uhowa)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)):
+  astro-expressive-code@0.41.3(astro@5.13.7(patch_hash=zvgi3yybwcilhwsulirdsm7a6q)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)):
     dependencies:
-      astro: 5.13.7(patch_hash=w2yoj546lyufy4tk7sdx3uhowa)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)
+      astro: 5.13.7(patch_hash=zvgi3yybwcilhwsulirdsm7a6q)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0)
       rehype-expressive-code: 0.41.3
 
   astro-icon@1.1.5:
@@ -7303,7 +7303,7 @@ snapshots:
       - debug
       - supports-color
 
-  astro@5.13.7(patch_hash=w2yoj546lyufy4tk7sdx3uhowa)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0):
+  astro@5.13.7(patch_hash=zvgi3yybwcilhwsulirdsm7a6q)(@types/node@24.3.1)(jiti@1.21.7)(lightningcss@1.29.3)(rollup@2.79.2)(sass@1.80.4)(stylus@0.64.0)(terser@5.43.1)(typescript@5.9.2)(yaml@2.7.0):
     dependencies:
       '@astrojs/compiler': 2.12.2
       '@astrojs/internal-helpers': 0.7.2
