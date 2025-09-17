@@ -53,22 +53,9 @@ const shuffledItems = [...items].sort(() => Math.random() - 0.5);
             </div>
         ))}
       </div>
-
-<!--在此处👇插入随机排列JS脚本 -->
-<script>
-window.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('friends-list');
-    if (!container) return;
-    const cards = Array.from(container.children);
-    // 洗牌算法
-    for (let i = cards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [cards[i], cards[j]] = [cards[j], cards[i]];
-    }
-    // 重新插入
-    cards.forEach(card => container.appendChild(card));
-});
-</script>
-<!--在此处👆插入随机排列JS脚本 -->
-
+      <Markdown class="mt-2">
+                <Content />
+            </Markdown>
+        </div>
+    </div>
 </MainGridLayout>
