@@ -7,8 +7,13 @@ tags: [更新日志]
 category: '公告'
 draft: false 
 lang: ''
-pinned: true
+pinned: false
+
 ---
+
+:::note
+本篇文章为**枫落丰源原创**，转载前请遵循 [**CC BY-NC-SA 4.0 协议**](https://creativecommons.org/licenses/by-nc-sa/4.0/) ，并声明本篇文章的标题及链接。
+:::
 
 借本次学校放假，对博客的部分内容进行了更新。
 

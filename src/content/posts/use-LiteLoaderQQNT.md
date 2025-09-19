@@ -29,8 +29,9 @@ lang: ''
 
 在 LiteLoaderQQNT 的安装上，本人使用的是本项目文档里推荐的社区安装脚本，全程傻瓜式操作，在网络环境良好下 15s 内即可安装完毕。
 
-> * https://github.com/Mzdyl/LiteLoaderQQNT_Install
->   使用 Python 编写的安装脚本，支持 Windows / Linux / MacOS。
+https://github.com/Mzdyl/LiteLoaderQQNT_Install
+
+> 使用 Python 编写的安装脚本，支持 Windows / Linux / MacOS。
 
 （中途还因为程序的文件目录与数据目录数据错误导致安装失败，插件没有生效，建议按照安装脚本推荐的目录安装）
 
