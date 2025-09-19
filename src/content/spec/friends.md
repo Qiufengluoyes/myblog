@@ -10,8 +10,12 @@
 
 ## 本站信息
 
-| 网站名称 | 枫落丰源                                 |
-|:----:| ------------------------------------ |
-| 介绍   | 和你的日常，就是奇迹                           |
-| 网址   | https://blog.feng1026.top/           |
-| 头像   | https://blog.feng1026.top/avatar.jpg |
+| 网站名称 | 枫落丰源                                                                                                    |
+|:----:| ------------------------------------------------------------------------------------------------------- |
+| 介绍   | 和你的日常，就是奇迹                                                                                              |
+| 网址   | <a href="https://blog.feng1026.top" target="_blank">https://blog.feng1026.top</a>                       |
+| 头像   | <a href="https://blog.feng1026.top/avatar.jpg" target="_blank">https://blog.feng1026.top/avatar.jpg</a> |
+
+
+
+
