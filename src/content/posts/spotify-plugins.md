@@ -5,8 +5,6 @@ description: '近段时间，为了能够使用外置软件歌词（指 Lyricify
 image: ''
 tags: [Spotify]
 category: '技术'
-draft: false 
+draft: true 
 lang: ''
 ---
-
-
