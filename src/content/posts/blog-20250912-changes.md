@@ -5,12 +5,10 @@ description: '本次对博客的图片显示进行了一些优化'
 image: 'https://image.091026.xyz/update.webp'
 tags: [更新日志]
 category: '公告'
-draft: false 
+draft: true 
 lang: ''
 pinned: false
-
 ---
-
 :::note
 本篇文章为**枫落丰源原创**，转载前请遵循 [**CC BY-NC-SA 4.0 协议**](https://creativecommons.org/licenses/by-nc-sa/4.0/) ，并声明本篇文章的标题及链接。
 :::
@@ -30,7 +28,6 @@ pinned: false
 ## 未来特性
 
 - 将添加 Fuwari 的链接卡片。
-
 - 将添加文章图片大小调整功能。
 
 上述的未来特性上线后将发布在最新的更新日志中。
