@@ -327,7 +327,7 @@ const downloadImage = async (
 
     const fileName = `${stem}${extension}`
     const filePath = path.join(cachePath, fileName)
-    const buffer = new Uint8Array(arrayBuffer)
+    const buffer = Buffer.from(arrayBuffer)
 
     await fs.writeFile(filePath, buffer)
 
