@@ -2,7 +2,7 @@
 title: 好久不见
 published: 2025-07-31
 description: 'Long time no see —— 好久不见：博客的新旅途就此扬帆起航！（Tip：后续会同步原博客上部分有价值的文章、说说）'
-image: 'https://image.091026.xyz/IMG_20250723_153541.png'
+image: 'https://image.091026.xyz/IMG_20250723_153541.webp'
 tags: [好久不见]
 category: '公告'
 draft: false
