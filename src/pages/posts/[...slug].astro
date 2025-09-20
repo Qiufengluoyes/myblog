@@ -95,7 +95,17 @@ const jsonLd = {
                 ></PostMetadata>
             </div>
 
-            <!-- 移除了文章封面 -->
+            <!-- 文章封面 -->
+            {entry.data.image && (
+                <div class="w-full mb-5 overflow-hidden rounded-xl onload-animation">
+                    <ImageWrapper
+                        src={entry.data.image}
+                        class="aspect-[2/1] w-full bg-black/5 dark:bg-white/5"
+                        basePath={path.join("content/posts/", getDir(entry.id))}
+                    />
+                </div>
+            )}
+
             <div class="border-[var(--line-divider)] border-dashed border-b-[1px] mb-5"></div>
 
 
