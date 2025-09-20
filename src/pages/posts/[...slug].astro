@@ -1,6 +1,5 @@
 ---
 import path from "node:path";
-import Twikoo from "@components/comment/Twikoo.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "@i18n/i18nKey";
@@ -93,37 +92,23 @@ const jsonLd = {
                         tags={entry.data.tags}
                         category={entry.data.category}
                 ></PostMetadata>
+                {!entry.data.image && <div class="border-[var(--line-divider)] border-dashed border-b-[1px] mb-5"></div>}
             </div>
 
-            <!-- 文章封面 -->
-            {entry.data.image && (
-                <div class="w-full mb-5 overflow-hidden rounded-xl onload-animation">
-                    <ImageWrapper
-                        src={entry.data.image}
-                        class="aspect-[2/1] w-full bg-black/5 dark:bg-white/5"
-                        basePath={path.join("content/posts/", getDir(entry.id))}
-                    />
-                </div>
-            )}
+            <!-- always show cover as long as it has one -->
 
-            <div class="border-[var(--line-divider)] border-dashed border-b-[1px] mb-5"></div>
+            {entry.data.image &&
+                <ImageWrapper id="post-cover" src={entry.data.image} basePath={path.join("content/posts/", getDir(entry.id))} class="mb-8 rounded-xl banner-container onload-animation"/>
+            }
 
 
-            <Markdown class="mb-6 markdown-content onload-animation" basePath={path.join("content/posts/", getDir(entry.id))}>
+            <Markdown class="mb-6 markdown-content onload-animation">
                 <Content />
             </Markdown>
 
             {licenseConfig.enable && <License title={entry.data.title} slug={entry.slug} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
 
         </div>
-    </div>
-
-    <div class="card-base p-6 mb-4"><Twikoo path={`/posts/${entry.slug}`} /></div>
-
-    <div
-        class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full"
-    >
-    <!--原有的代码，方便参照代码插入位置-->
     </div>
 
     <div class="flex flex-col md:flex-row justify-between mb-4 gap-4 overflow-hidden w-full">
