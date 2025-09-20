@@ -55,30 +55,108 @@ const imageStyle = `object-position: ${position}`;
     </div>
     
     <!-- 图片内容 -->
-    <div class="transition absolute inset-0 dark:bg-black/10 bg-opacity-50 pointer-events-none"></div>
-    {isLocal && img && <Image src={img} alt={alt || ""} class={imageClass} style={imageStyle} loading="eager" data-image-element />}
-    {!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle} loading="eager" data-image-element />}
+    <div class="image-container">
+        {isLocal && img && <Image src={img} alt={alt || ""} class={imageClass} style={imageStyle} loading="eager" data-image-element />}
+        {!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle} loading="eager" data-image-element />}
+    </div>
+    <div class="image-overlay">
+        <div class="overlay-mask pointer-events-none"></div>
+    </div>
 </div>
 
 <script>
-    function shouldShowAnimation() {
-        const lastAnimationTime = sessionStorage.getItem('lastImageAnimationTime');
-        const now = Date.now();
-        
-        // 如果是首次访问或距离上次动画超过5秒，则显示动画
-        if (!lastAnimationTime || (now - parseInt(lastAnimationTime)) > 5000) {
-            sessionStorage.setItem('lastImageAnimationTime', now.toString());
-            return true;
-        }
-        return false;
+    interface AnimationState {
+        lastGlobalTime?: number;
+        lastPath?: string;
     }
 
-    // 初始化时检查是否显示动画
-    if (shouldShowAnimation()) {
-        document.querySelectorAll('[data-image-wrapper]').forEach(wrapper => {
-            wrapper.classList.add('show-animation');
-        });
+    class ImageAnimationController {
+        static readonly storageKey = 'imageAnimationState';
+        static readonly cooldownTime = 5000; // 5秒冷却时间
+
+        static getState(): AnimationState {
+            try {
+                return JSON.parse(sessionStorage.getItem(this.storageKey) || '{}');
+            } catch {
+                return {};
+            }
+        }
+
+        static setState(state: AnimationState): void {
+            sessionStorage.setItem(this.storageKey, JSON.stringify(state));
+        }
+
+        static shouldShowAnimation(): boolean {
+            const state = this.getState();
+            const now = Date.now();
+            const path = window.location.pathname;
+
+            // 检查全局状态
+            if (!state.lastGlobalTime || (now - state.lastGlobalTime) > this.cooldownTime) {
+                state.lastGlobalTime = now;
+                state.lastPath = path;
+                this.setState(state);
+                return true;
+            }
+
+            // 检查路径变化
+            if (state.lastPath !== path) {
+                // 即使路径改变，也要遵守冷却时间
+                state.lastPath = path;
+                this.setState(state);
+                return false;
+            }
+
+            return false;
+        }
+
+        static init(): void {
+            // 确保只初始化一次
+            if ((window as any).__imageAnimationInitialized) return;
+            (window as any).__imageAnimationInitialized = true;
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => this.handleAnimation());
+            } else {
+                this.handleAnimation();
+            }
+
+            // 监听 astro:page-load 事件，处理 view transitions
+            document.addEventListener('astro:page-load', () => {
+                this.handleAnimation();
+            });
+
+            // 监听 astro:after-swap 事件，确保在视图转换后正确处理
+            document.addEventListener('astro:after-swap', () => {
+                this.handleAnimation();
+            });
+        }
+
+        static handleAnimation(): void {
+            const wrappers = document.querySelectorAll<HTMLElement>('[data-image-wrapper]');
+            if (!wrappers.length) return;
+
+            const shouldAnimate = this.shouldShowAnimation();
+            
+            wrappers.forEach(wrapper => {
+                if (shouldAnimate) {
+                    if (!wrapper.classList.contains('show-animation')) {
+                        wrapper.classList.add('show-animation');
+                    }
+                } else {
+                    wrapper.classList.remove('show-animation');
+                    const imageContent = wrapper.querySelector<HTMLElement>('.image-content');
+                    if (imageContent) {
+                        imageContent.style.opacity = '1';
+                        imageContent.style.visibility = 'visible';
+                    }
+                }
+            });
+        }
     }
+
+    // 初始化控制器
+    ImageAnimationController.init();
 </script>
 
 <style>
@@ -115,6 +193,34 @@ const imageStyle = `object-position: ${position}`;
         transition: all 0.5s ease-out;
         will-change: opacity, visibility, transform;
     }
+
+    .image-container {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+    }
+
+    .image-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.5s ease-out;
+        will-change: opacity, visibility;
+    }
+
+    .overlay-mask {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.02) 100%);
+        transition: opacity 0.3s ease-out;
+    }
+
+    :global(.dark) .overlay-mask {
+        background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.1) 100%);
+    }
     
     /* 暗色模式样式 */
     :global(.dark) .loading-bar {
@@ -123,6 +229,11 @@ const imageStyle = `object-position: ${position}`;
     
     /* 非动画状态（默认状态）*/
     :global(:not(.show-animation)) .image-content {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    :global(:not(.show-animation)) .image-overlay {
         opacity: 1;
         visibility: visible;
     }
@@ -144,6 +255,12 @@ const imageStyle = `object-position: ${position}`;
         opacity: 0;
         visibility: hidden;
         animation: image-fade-in 0.5s ease-out 2.4s forwards;
+    }
+
+    :global(.show-animation) .image-overlay {
+        opacity: 0;
+        visibility: hidden;
+        animation: overlay-fade-in 0.5s ease-out 2.4s forwards;
     }
     
     /* 动画关键帧 */
@@ -230,6 +347,23 @@ const imageStyle = `object-position: ${position}`;
         0% {
             opacity: 0;
             visibility: hidden;
+            transform: scale(1.02);
+        }
+        100% {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes overlay-fade-in {
+        0% {
+            opacity: 0;
+            visibility: hidden;
+        }
+        50% {
+            opacity: 0.7;
+            visibility: visible;
         }
         100% {
             opacity: 1;
@@ -242,37 +376,3 @@ const imageStyle = `object-position: ${position}`;
         transform: scale(1.05);
     }
 </style>
-
-<script>
-    const ANIMATION_STATE = 'animation-state';
-    const PAGE_LOAD_TIME = 'page-load-time';
-    
-    // 获取当前时间戳
-    const currentTime = new Date().getTime();
-    // 获取上次页面加载时间
-    const lastLoadTime = sessionStorage.getItem(PAGE_LOAD_TIME);
-    // 获取动画状态
-    const animationState = sessionStorage.getItem(ANIMATION_STATE);
-    
-    // 判断是刷新还是页面跳转
-    // 如果时间差大于3秒，认为是刷新或新会话
-    const isRefresh = !lastLoadTime || (currentTime - parseInt(lastLoadTime)) > 3000;
-    
-    // 更新页面加载时间
-    sessionStorage.setItem(PAGE_LOAD_TIME, currentTime.toString());
-    
-    if (isRefresh || !animationState) {
-        // 如果是刷新页面或新会话，显示动画
-        document.documentElement.classList.add('show-animation');
-        // 设置动画状态为已显示
-        sessionStorage.setItem(ANIMATION_STATE, 'shown');
-        
-        // 2.25秒后移除动画类
-        setTimeout(() => {
-            document.documentElement.classList.remove('show-animation');
-        }, 2250);
-    } else {
-        // 如果是页面跳转，直接显示内容
-        document.documentElement.classList.remove('show-animation');
-    }
-</script>
