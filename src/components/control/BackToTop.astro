@@ -183,32 +183,133 @@ import { Icon } from "astro-icon/components";
 (function() {
     'use strict';
     
-    const btn = document.getElementById('back-to-top-btn');
+    const btn = document.getElementById('back-to-top-btn') as HTMLElement;
     if (!btn) return;
     
-    const progressBar = btn.querySelector('.progress-bar');
-    const percentText = btn.querySelector('.percent-text');
+    const progressBar = btn.querySelector('.progress-bar') as SVGElement;
+    const percentText = btn.querySelector('.percent-text') as HTMLElement;
     
     // 常量配置
     const CIRCUMFERENCE = 125.66;
     const SCROLL_THRESHOLD = 200;
     const IDLE_TIMEOUT = 500;  // 变为箭头的延迟时间
+    const THROTTLE_SCROLL = 16;  // 约60fps
+    const DEBOUNCE_RESIZE = 100;
+    const DEBOUNCE_MUTATION = 150;
     
     // 状态管理
     let scrollPercent = 0;
     let isVisible = false;
-    let scrollTimer = null;
+    let scrollTimer: NodeJS.Timeout | null = null;
     let isHovering = false;
     let docHeight = 0;
     let viewHeight = 0;
     let lastScrollTop = 0;
     let isScrolling = false;
+    let resizeObserver = null;
     
     // 更新文档高度
     function updateDocHeight() {
         viewHeight = document.documentElement.clientHeight;
         docHeight = document.documentElement.scrollHeight - viewHeight;
     }
+    
+    // 节流函数
+    function throttle<T extends (...args: any[]) => void>(
+        func: T,
+        limit: number
+    ): (...args: Parameters<T>) => void {
+        let inThrottle = false;
+        let lastRan: number | null = null;
+        
+        return function (this: any, ...args: Parameters<T>) {
+            if (!inThrottle) {
+                func.apply(this, args);
+                lastRan = Date.now();
+                inThrottle = true;
+                setTimeout(() => {
+                    if (lastRan && Date.now() - lastRan >= limit) {
+                        inThrottle = false;
+                    }
+                }, limit);
+            }
+        };
+    }
+
+    // 防抖函数
+    function debounce<T extends (...args: any[]) => void>(
+        func: T,
+        wait: number
+    ): (...args: Parameters<T>) => void {
+        let timeout: ReturnType<typeof setTimeout> | null = null;
+        
+        return function (this: any, ...args: Parameters<T>) {
+            if (timeout) clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                func.apply(this, args);
+            }, wait);
+        };
+    }
+
+    // 优化的更新函数
+    const debouncedUpdate = debounce(() => {
+        updateDocHeight();
+        updateButton();
+    }, 100);
+
+    // 创建 MutationObserver 监听 DOM 变化
+    const mutationObserver = new MutationObserver((mutations) => {
+        let shouldUpdate = false;
+        for (const mutation of mutations) {
+            // 检查是否有影响页面高度的变化
+            if (mutation.type === 'childList' || 
+                (mutation.type === 'attributes' && 
+                 mutation.target instanceof HTMLElement &&
+                 (mutation.target instanceof HTMLImageElement || 
+                  getComputedStyle(mutation.target).display !== 'none'))) {
+                shouldUpdate = true;
+                break;
+            }
+        }
+        if (shouldUpdate) {
+            debouncedUpdate();
+        }
+    });
+    
+    // 创建 ResizeObserver 监听元素尺寸变化
+    resizeObserver = new ResizeObserver(throttle(() => {
+        updateDocHeight();
+        updateButton();
+    }, 100));
+    
+    // 平滑数字更新函数
+    function smoothUpdateNumber(currentValue: number, targetValue: number, callback: (value: number) => void) {
+        if (currentValue === targetValue) return;
+        
+        let start: number | null = null;
+        const duration = 200; // 动画持续时间（毫秒）
+        const difference = targetValue - currentValue;
+        
+        function animate(timestamp: number) {
+            if (!start) start = timestamp;
+            const progress = Math.min((timestamp - start) / duration, 1);
+            
+            // easeOutQuad 缓动函数
+            const easeProgress = 1 - (1 - progress) * (1 - progress);
+            const currentNum = Math.round(currentValue + (difference * easeProgress));
+            
+            callback(currentNum);
+            
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        }
+        
+        requestAnimationFrame(animate);
+    }
+
+    // 存储上一次的百分比值
+    let lastPercent = 0;
     
     // 主更新函数
     function updateButton() {
@@ -228,16 +329,29 @@ import { Icon } from "astro-icon/components";
         }
         
         if (shouldShow && docHeight > 0) {
-            // 计算并更新进度
-            scrollPercent = Math.min(100, Math.round((scrollTop / docHeight) * 100));
+            // 计算新的进度百分比
+            const newScrollPercent = Math.min(100, Math.round((scrollTop / docHeight) * 100));
             
-            if (progressBar) {
-                const offset = CIRCUMFERENCE - (scrollPercent / 100) * CIRCUMFERENCE;
-                progressBar.style.strokeDashoffset = offset;
-            }
-            
-            if (percentText) {
-                percentText.textContent = scrollPercent;
+            // 如果百分比变化超过阈值，才更新
+            if (Math.abs(newScrollPercent - lastPercent) >= 1) {
+                scrollPercent = newScrollPercent;
+                
+                // 平滑更新进度条
+                if (progressBar) {
+                    smoothUpdateNumber(lastPercent, scrollPercent, (value) => {
+                        const offset = CIRCUMFERENCE - (value / 100) * CIRCUMFERENCE;
+                        progressBar.style.strokeDashoffset = offset.toString();
+                    });
+                }
+                
+                // 平滑更新百分比文字
+                if (percentText) {
+                    smoothUpdateNumber(lastPercent, scrollPercent, (value) => {
+                        percentText.textContent = value.toString();
+                    });
+                }
+                
+                lastPercent = scrollPercent;
             }
             
             // 检测滚动（避免微小抖动）
@@ -249,7 +363,9 @@ import { Icon } from "astro-icon/components";
                     btn.classList.remove('idle');  // 滚动时移除半透明
                 }
                 
-                clearTimeout(scrollTimer);
+                if (scrollTimer) {
+                    clearTimeout(scrollTimer);
+                }
                 scrollTimer = setTimeout(() => {
                     if (!isHovering) {
                         isScrolling = false;
@@ -272,7 +388,7 @@ import { Icon } from "astro-icon/components";
         // 平滑重置进度条
         if (progressBar) {
             progressBar.style.transition = 'stroke-dashoffset 0.5s ease';
-            progressBar.style.strokeDashoffset = CIRCUMFERENCE;
+            progressBar.style.strokeDashoffset = CIRCUMFERENCE.toString();
             setTimeout(() => {
                 progressBar.style.transition = 'none';
             }, 500);
@@ -290,9 +406,12 @@ import { Icon } from "astro-icon/components";
     }
     
     // 事件监听
-    window.addEventListener('scroll', () => {
+    // 节流的滚动处理
+    const throttledScroll = throttle(() => {
         requestAnimationFrame(updateButton);
-    }, { passive: true });
+    }, THROTTLE_SCROLL);
+
+    window.addEventListener('scroll', throttledScroll, { passive: true });
     
     window.addEventListener('resize', () => {
         updateDocHeight();
@@ -323,12 +442,12 @@ import { Icon } from "astro-icon/components";
     });
     
     // 触摸设备支持
-    let touchTimer;
-    btn.addEventListener('touchstart', () => {
+    let touchTimer: ReturnType<typeof setTimeout> | null = null;
+    const touchStartHandler = () => {
         isHovering = true;
         btn.classList.remove('idle');
-        clearTimeout(scrollTimer);
-        clearTimeout(touchTimer);
+        if (scrollTimer) clearTimeout(scrollTimer);
+        if (touchTimer) clearTimeout(touchTimer);
         
         touchTimer = setTimeout(() => {
             isHovering = false;
@@ -336,11 +455,26 @@ import { Icon } from "astro-icon/components";
             btn.classList.add('idle');
             isScrolling = false;
         }, 2000);
-    }, { passive: true });
+    };
+    btn.addEventListener('touchstart', touchStartHandler, { passive: true });
     
     // 初始化
     updateDocHeight();
     updateButton();
+    
+    // 性能优化：仅在首次加载后开始观察
+    setTimeout(() => {
+        // 观察 body 元素的变化
+        mutationObserver.observe(document.body, {
+            childList: true,      // 监听子节点的添加/删除
+            subtree: true,        // 监听所有后代节点
+            attributes: true,     // 监听属性变化
+            attributeFilter: ['style', 'class', 'hidden'] // 只监听可能影响布局的属性
+        });
+        
+        // 观察 body 元素的尺寸变化
+        resizeObserver.observe(document.body);
+    }, 0);
     
     // 页面可见性改变时更新
     document.addEventListener('visibilitychange', () => {
@@ -349,5 +483,11 @@ import { Icon } from "astro-icon/components";
             updateButton();
         }
     });
+    
+    // 清理观察器
+    return () => {
+        mutationObserver.disconnect();
+        resizeObserver.disconnect();
+    };
 })();
 </script>
