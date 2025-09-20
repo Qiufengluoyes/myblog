@@ -15,7 +15,7 @@ lang: ''
 
 ::github{repo="twikoojs/twikoo"}
 
-但是 Twikoo 在 Fuwari 这个基于 Astro 的主题上直接应用会有单击部分按钮直接返回网站顶部的问题。为了解决这一问题，于是我着手准备自己自行编译一个 Twikoo 前端
+但是 Twikoo 在 Fuwari 这个基于 Astro 的主题上直接应用会有单击部分按钮直接返回网站顶部的问题。为了解决这一问题，于是我着手准备自己自行编译一个 Twikoo 前端。
 
 但在编译过程中，我遇到了一堆奇怪的问题……
 
@@ -38,13 +38,13 @@ dist
 
 > 关于编译可以看看package.json里是怎么写的[菜汪]
 
-于是我打开了 `package.json` 文件准备对其进行修改
+于是我打开了 `package.json` 文件准备对其进行修改。
 
 ```json
 "scripts": {
     "dev": "webpack serve --mode development",
     "serve": "webpack serve --mode development",
-"build": "cross-env NODE_ENV=production webpack --mode production",t",
+    "build": "cross-env NODE_ENV=production webpack --mode production",t",
     "analyze": "webpack --profile --json > stats.json && webpack-bundle-analyzer stats.json",
     "login": "tcb login",
     "logout": "tcb logout",
@@ -53,3 +53,7 @@ dist
     "docs:dev": "cd docs && yarn docs:dev",
     "docs:build": "cd docs && yarn docs:build"
 ```
+
+其中我注意到了 `"build": "cross-env NODE_ENV=production webpack --mode production",t",` 这一代码，因为本人之前从未研究过`package.json` 文件的组成，所以我将这一问题抛给了 AI 解答。
+
+
