@@ -27,8 +27,29 @@ Fork 项目后，我在 Vscode 上打开 Twikoo 的源码，准备快速搞完�
 
 编译完之后的我查看 `dist` 文件夹，发现编译后生成的文件如下：
 
-```
+```flies
 dist
+    …… // 其他文件
     twikoo.nocss.js
-    
+    twikoo.nocss.js.LICENSE.txt
+```
+
+诶，为什么 `pnpm build` 之后没有生成 Twikoo 文档里所说的 `twikoo.all.min.js` 和 `twikoo.min.js` 呢？抱着疑问，我去询问了 Mugzx 大佬，得到了如下答复：
+
+> 关于编译可以看看package.json里是怎么写的[菜汪]
+
+于是我打开了 `package.json` 文件准备对其进行修改
+
+```json
+"scripts": {
+    "dev": "webpack serve --mode development",
+    "serve": "webpack serve --mode development",
+"build": "cross-env NODE_ENV=production webpack --mode production",t",
+    "analyze": "webpack --profile --json > stats.json && webpack-bundle-analyzer stats.json",
+    "login": "tcb login",
+    "logout": "tcb logout",
+    "deploy": "tcb fn deploy twikoo --force",
+    "lint": "eslint src/** --ignore-path .eslintignore",
+    "docs:dev": "cd docs && yarn docs:dev",
+    "docs:build": "cd docs && yarn docs:build"
 ```
