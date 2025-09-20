@@ -1,4 +1,5 @@
 ---
+import WidgetLayout from "@components/widget/WidgetLayout.astro";
 interface Props {
   path: string;
 }
@@ -10,7 +11,9 @@ const config = {
 ---
 
 <!-- 简化了配置部分的代码，实际上可以把配置文件统一写入fuwari的配置文件统一读取 -->
-<div id="comment"></div>
+<WidgetLayout name={i18n(I18nKey.comments)} id="comments">
+  <div id="comment"></div>
+</WidgetLayout>
 <script define:vars={{ config }}>
   function loadTwikoo() {
     const script = document.createElement("script");
