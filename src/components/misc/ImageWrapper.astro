@@ -61,6 +61,7 @@ const imageStyle = `object-position: ${position}`;
 </div>
 
 <style>
+    /* 基础样式 */
     .loading-bar {
         position: absolute;
         top: 50%;
@@ -72,21 +73,59 @@ const imageStyle = `object-position: ${position}`;
         z-index: 10;
         border-radius: 9999px;
         overflow: hidden;
-        transition: opacity 0.5s ease-out;
+        opacity: 0;
+        visibility: hidden;
+        backdrop-filter: blur(4px);
+        transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+        transform-origin: center;
     }
-    
-    :global(.dark) .loading-bar {
-        background-color: rgba(75, 85, 99, 0.3);
-    }
-    
+
     .loading-progress {
         height: 100%;
         width: 2rem;
         background-color: oklch(0.70 0.14 var(--theme-hue));
-        animation: loading-progress 1.125s ease-in-out 2;
         border-radius: 9999px;
+        box-shadow: 0 0 10px oklch(0.70 0.14 var(--theme-hue) / 0.3);
     }
     
+    .image-content {
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.5s ease-out;
+        will-change: opacity, visibility, transform;
+    }
+    
+    /* 暗色模式样式 */
+    :global(.dark) .loading-bar {
+        background-color: rgba(75, 85, 99, 0.3);
+    }
+    
+    /* 非动画状态（默认状态）*/
+    :global(:not(.show-animation)) .image-content {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    /* 动画状态样式 */
+    :global(.show-animation) .loading-bar {
+        opacity: 1;
+        visibility: visible;
+        animation: loading-bar-fade 2.4s ease-in-out forwards;
+    }
+    
+    :global(.show-animation) .loading-progress {
+        animation: loading-progress 1.125s ease-in-out 2;
+        position: relative;
+        z-index: 1;
+    }
+    
+    :global(.show-animation) .image-content {
+        opacity: 0;
+        visibility: hidden;
+        animation: image-fade-in 0.5s ease-out 2.4s forwards;
+    }
+    
+    /* 动画关键帧 */
     @keyframes loading-progress {
         0% {
             transform: translateX(-100%);
@@ -96,37 +135,123 @@ const imageStyle = `object-position: ${position}`;
         }
     }
     
-    .loading-bar {
-        animation: hide-loading-bar 2.25s forwards;
-    }
-    
-    @keyframes hide-loading-bar {
-        0%, 90% {
+    @keyframes loading-bar-fade {
+        0%, 85% {
             opacity: 1;
+            transform: translate(-50%, -50%);
+            background-color: rgba(156, 163, 175, 0.2);
+            filter: blur(0);
+        }
+        90% {
+            opacity: 0.95;
+            transform: translate(-50%, -49%);
+            background-color: rgba(156, 163, 175, 0.18);
+            filter: blur(0.3px);
+        }
+        95% {
+            opacity: 0.6;
+            transform: translate(-50%, -48%);
+            background-color: rgba(156, 163, 175, 0.12);
+            filter: blur(0.8px);
+        }
+        97% {
+            opacity: 0.3;
+            transform: translate(-50%, -47.5%);
+            background-color: rgba(156, 163, 175, 0.06);
+            filter: blur(1.2px);
         }
         100% {
+            opacity: 0;
+            transform: translate(-50%, -47%);
+            background-color: rgba(156, 163, 175, 0);
+            filter: blur(1.5px);
+        }
+    }
+    
+    :global(.dark) .loading-bar {
+        animation-name: loading-bar-fade-dark;
+    }
+    
+    @keyframes loading-bar-fade-dark {
+        0%, 85% {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+            background-color: rgba(75, 85, 99, 0.3);
+            filter: blur(0);
+        }
+        90% {
+            opacity: 0.95;
+            transform: translate(-50%, -49%);
+            background-color: rgba(75, 85, 99, 0.25);
+            filter: blur(0.3px);
+        }
+        95% {
+            opacity: 0.6;
+            transform: translate(-50%, -48%);
+            background-color: rgba(75, 85, 99, 0.15);
+            filter: blur(0.8px);
+        }
+        97% {
+            opacity: 0.3;
+            transform: translate(-50%, -47.5%);
+            background-color: rgba(75, 85, 99, 0.08);
+            filter: blur(1.2px);
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -47%);
+            background-color: rgba(75, 85, 99, 0);
+            filter: blur(1.5px);
+        }
+    }
+    
+    @keyframes image-fade-in {
+        0% {
             opacity: 0;
             visibility: hidden;
         }
-    }
-    
-    .image-content {
-        opacity: 0;
-        animation: fade-in 0.5s ease-out 2.25s forwards;
-        transition: transform 0.3s ease-out;
-    }
-    
-    @keyframes fade-in {
-        0% {
-            opacity: 0;
-        }
         100% {
             opacity: 1;
+            visibility: visible;
         }
     }
     
-    /* 只对非顶部banner的图片应用缩放效果 */
+    /* 悬停效果 */
     .image-wrapper:not(#banner):hover .image-content {
         transform: scale(1.05);
     }
 </style>
+
+<script>
+    const ANIMATION_STATE = 'animation-state';
+    const PAGE_LOAD_TIME = 'page-load-time';
+    
+    // 获取当前时间戳
+    const currentTime = new Date().getTime();
+    // 获取上次页面加载时间
+    const lastLoadTime = sessionStorage.getItem(PAGE_LOAD_TIME);
+    // 获取动画状态
+    const animationState = sessionStorage.getItem(ANIMATION_STATE);
+    
+    // 判断是刷新还是页面跳转
+    // 如果时间差大于3秒，认为是刷新或新会话
+    const isRefresh = !lastLoadTime || (currentTime - parseInt(lastLoadTime)) > 3000;
+    
+    // 更新页面加载时间
+    sessionStorage.setItem(PAGE_LOAD_TIME, currentTime.toString());
+    
+    if (isRefresh || !animationState) {
+        // 如果是刷新页面或新会话，显示动画
+        document.documentElement.classList.add('show-animation');
+        // 设置动画状态为已显示
+        sessionStorage.setItem(ANIMATION_STATE, 'shown');
+        
+        // 2.25秒后移除动画类
+        setTimeout(() => {
+            document.documentElement.classList.remove('show-animation');
+        }, 2250);
+    } else {
+        // 如果是页面跳转，直接显示内容
+        document.documentElement.classList.remove('show-animation');
+    }
+</script>
