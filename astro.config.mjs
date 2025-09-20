@@ -16,6 +16,7 @@ import remarkGithubAdmonitionsToDirectives from "remark-github-admonitions-to-di
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import remarkImageCaption from "./src/plugins/remark-image-caption.ts";
+import remarkImageWidth from './src/plugins/remark-image-width.js'
 import { expressiveCodeConfig } from "./src/config.ts";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
@@ -109,21 +110,22 @@ export default defineConfig({
     	}),
 	],
 	markdown: {
-		remarkPlugins: [
-			remarkMath,
-			remarkReadingTime,
-			remarkExcerpt,
-			remarkGithubAdmonitionsToDirectives,
-			remarkDirective,
-			[
-        		remarkImageCaption,
-        		{
-          			className: 'image-caption',
-        		},
-      		],
-			remarkSectionize,
-			parseDirectiveNode,
-		],
+		 remarkPlugins: [
+            remarkMath, // 支持 $ 数学语法
+            remarkReadingTime, // 计算阅读时长
+            remarkExcerpt, // 自动生成摘要
+            remarkGithubAdmonitionsToDirectives, // 支持 GitHub 风格提示块
+            remarkDirective, // 支持 ::note 等指令
+            [
+                remarkImageCaption,
+                {
+                    className: 'image-caption',
+                },
+            ],
+            remarkImageWidth,
+            remarkSectionize, // 自动 section 包裹
+            parseDirectiveNode, // 自定义指令处理
+        ],
 		rehypePlugins: [
 			rehypeKatex,
 			rehypeSlug,
