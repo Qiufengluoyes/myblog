@@ -60,6 +60,27 @@ const imageStyle = `object-position: ${position}`;
     {!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle} loading="eager" data-image-element />}
 </div>
 
+<script>
+    function shouldShowAnimation() {
+        const lastAnimationTime = sessionStorage.getItem('lastImageAnimationTime');
+        const now = Date.now();
+        
+        // 如果是首次访问或距离上次动画超过5秒，则显示动画
+        if (!lastAnimationTime || (now - parseInt(lastAnimationTime)) > 5000) {
+            sessionStorage.setItem('lastImageAnimationTime', now.toString());
+            return true;
+        }
+        return false;
+    }
+
+    // 初始化时检查是否显示动画
+    if (shouldShowAnimation()) {
+        document.querySelectorAll('[data-image-wrapper]').forEach(wrapper => {
+            wrapper.classList.add('show-animation');
+        });
+    }
+</script>
+
 <style>
     /* 基础样式 */
     .loading-bar {
