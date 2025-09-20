@@ -1,6 +1,6 @@
 ---
 import path from "node:path";
-import Twikoo from '@components/comment/Twikoo.astro';
+import Twikoo from "@components/comment/Twikoo.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "@i18n/i18nKey";
@@ -93,14 +93,10 @@ const jsonLd = {
                         tags={entry.data.tags}
                         category={entry.data.category}
                 ></PostMetadata>
-                {!entry.data.image && <div class="border-[var(--line-divider)] border-dashed border-b-[1px] mb-5"></div>}
             </div>
 
-            <!-- always show cover as long as it has one -->
-
-            {entry.data.image &&
-                <ImageWrapper id="post-cover" src={entry.data.image} basePath={path.join("content/posts/", getDir(entry.id))} class="mb-8 rounded-xl banner-container onload-animation"/>
-            }
+            <!-- 移除了文章封面 -->
+            <div class="border-[var(--line-divider)] border-dashed border-b-[1px] mb-5"></div>
 
 
             <Markdown class="mb-6 markdown-content onload-animation" basePath={path.join("content/posts/", getDir(entry.id))}>
