@@ -6,7 +6,11 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["MiSans Medium", "MiSans Demibold", ...defaultTheme.fontFamily.sans],
+        sans: [
+          "MiSans Medium",
+          "MiSans Demibold",
+          ...defaultTheme.fontFamily.sans,
+        ],
       },
     },
   },
