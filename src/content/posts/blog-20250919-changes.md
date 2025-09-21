@@ -1,5 +1,5 @@
 ---
-title: 更新日志——2025年9月19日
+title: 更新日志——2025 年 9 月 19 日
 published: 2025-09-12
 description: '本次正式添加了「链接卡片」的功能，并优化了友链界面（内有动图，建议在非移动数据网络下阅读）'
 image: 'https://image.091026.xyz/update.webp'
@@ -9,7 +9,6 @@ draft: false
 lang: ''
 pinned: true
 ---
-
 :::note
 本篇文章为**枫落丰源原创**，转载前请遵循 [**CC BY-NC-SA 4.0 协议**](https://creativecommons.org/licenses/by-nc-sa/4.0/) ，并声明本篇文章的标题及链接。
 :::
