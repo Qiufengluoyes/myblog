@@ -68,7 +68,7 @@ export const profileConfig: ProfileConfig = {
 			icon: "mingcute:bilibili-line", // Visit https://icones.js.org/ for icon codes
 			// You will need to install the corresponding icon set if it's not already included
 			// `pnpm add @iconify-json/<icon-set-name>`
-			url: "https://space.bilibili.com/1735270180",
+			url: "https://space.bilibili.com/1735270180/",
 		},
 		{
 			name: "Steam",
