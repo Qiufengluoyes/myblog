@@ -46,11 +46,6 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.About,
 		LinkPreset.Friends,
 		{
-			name: "网站状况监测",
-			url: "https://status.feng1026.top", // Internal links should not include the base path, as it is automatically added
-			external: true, // Show an external link icon and will open in a new tab
-		},
-		{
 			name: "开往",
 			url: "https://www.travellings.cn/plain.html", // Internal links should not include the base path, as it is automatically added
 			external: true, // Show an external link icon and will open in a new tab
@@ -76,19 +71,19 @@ export const profileConfig: ProfileConfig = {
 			url: "https://steamcommunity.com/id/qiufengluoye44/",
 		},
 		{
-			name: "开往-友链接力",
-			icon: "ic:sharp-directions-subway",
-			url: "https://www.travellings.cn/plain.html",
-		},
-		{
 			name: "GitHub",
-			icon: "line-md:github",
+			icon: "tabler:brand-github",
 			url: "https://github.com/Qiufengluoyes",
 		},
 		{
 			name: "电子邮箱",
-			icon: "line-md:email-alt-twotone",
+			icon: "ic:round-mail-outline",
 			url: "mailto:qiufengluoyes@outlook.com",
+		},
+		{
+			name: "开往-友链接力",
+			icon: "ic:sharp-directions-subway",
+			url: "https://www.travellings.cn/plain.html",
 		},
 	],
 };
