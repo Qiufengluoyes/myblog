@@ -14,29 +14,36 @@ if (!friendsPost) {
 const { Content } = await friendsPost.render()
 const items = [
   {
-    title: '地球驿站',
-    imgurl: 'https://www.mugzx.top/api/avatar.png',
-    desc: '向上革命，向下实践。',
-    siteurl: 'https://blog.mugzx.top',
-    tags: ['Mugzx'],
+    title: "Mugzx's Blog",
+    imgurl: "https://www.mugzx.top/api/avatar.png",
+    desc: "向上革命，向下实践。",
+    siteurl: "https://blog.mugzx.top",
+    tags: ["Mugzx"],
   },
   {
-    title: 'RefactX Project',
-    imgurl: 'https://www.refact.cc/avatar.png',
-    desc: '形体是简单而纯粹的，它不是完整的群体，每个形体都指向其复杂性，并最终被复杂性联系在一起。',
-    siteurl: 'https://www.refact.cc/',
-    tags: ['Refactored'],
+    title: "RefactX Project",
+    imgurl: "https://www.refact.cc/avatar.png",
+    desc: "形体是简单而纯粹的，它不是完整的群体，每个形体都指向其复杂性，并最终被复杂性联系在一起。",
+    siteurl: "https://www.refact.cc/",
+    tags: ["Refactored"],
   },
   {
-    title: 'LYEy_isine',
-    imgurl: 'https://tc-new.z.wiki/autoupload/f/UdxyOKhNTtcbZB7VCT3UgfISxQjrFcHo0MYIVlLsrJSyl5f0KlZfm6UsKj-HyTuv/20250906/NGik/460X460/103258286.png',
-    desc: '花海无一日，少年踏自来。',
-    siteurl: 'https://caiyifeng.top/',
-    tags: ['LYEy_isine'],
+    title: "LineXic 书屋",
+    imgurl: "https:/www.linexic.top/avatar.webp",
+    desc: "难离难舍，想抱紧些",
+    siteurl: "https://www.linexic.top",
+    tags: ["LineXic"],
+  },
+  {
+    title: "LYEy_isine",
+    imgurl: "https://tc-new.z.wiki/autoupload/f/UdxyOKhNTtcbZB7VCT3UgfISxQjrFcHo0MYIVlLsrJSyl5f0KlZfm6UsKj-HyTuv/20250906/NGik/460X460/103258286.png",
+    desc: "花海无一日，少年踏自来",
+    siteurl: "https://caiyifeng.top/",
+    tags: ["LYEy_isine"],
   },
 ]
 
-// FIX: Create the 'shuffledItems' array by shuffling the 'items' array.
+// FIX: Create the "shuffledItems" array by shuffling the "items" array.
 const shuffledItems = [...items].sort(() => Math.random() - 0.5);
 ---
 <MainGridLayout title={i18n(I18nKey.friends)} description={i18n(I18nKey.friends)}>

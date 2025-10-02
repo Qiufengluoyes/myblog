@@ -2,7 +2,7 @@
 
 - 能在中国大陆正常访问
 - 已经启用全站强制 HTTPS
-- 博客访问速度（使用Cloudflare除外）、性能优化较好
+- 博客访问速度（使用 Cloudflare 除外）、性能优化较好
 - 确保您的网站有价值内容占比较多
 - 不定期检查网站访问情况，若无法访问则会将您的网站从友链列表中暂时移除
 
@@ -10,8 +10,8 @@
 
 ## 本站信息
 
-| 网站名称 | 枫落丰源                                                                                                    |
-|:----:| ------------------------------------------------------------------------------------------------------- |
-| 介绍   | 和你的日常，就是奇迹                                                                                              |
-| 网址   | <a href="https://blog.feng1026.top" target="_blank">https://blog.feng1026.top</a>                       |
-| 头像   | <a href="https://blog.feng1026.top/avatar.jpg" target="_blank">https://blog.feng1026.top/avatar.jpg</a> |
+| 网站名称 | 枫落丰源                                                                                                        |
+| :------: | --------------------------------------------------------------------------------------------------------------- |
+|   介绍   | 和你的日常，就是奇迹                                                                                            |
+|   网址   | `<a href="https://blog.feng1026.top" target="_blank">`https://blog.feng1026.top`</a>`                       |
+|   头像   | `<a href="https://blog.feng1026.top/avatar.jpg" target="_blank">`https://blog.feng1026.top/avatar.jpg`</a>` |
