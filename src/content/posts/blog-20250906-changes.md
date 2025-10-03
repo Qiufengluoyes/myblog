@@ -5,7 +5,7 @@ description: '本次对博客的页面字体进行了一些小更新'
 image: 'https://image.091026.xyz/update.webp'
 tags: [更新日志]
 category: '公告'
-draft: true 
+draft:false
 lang: ''
 pinned: false
 ---

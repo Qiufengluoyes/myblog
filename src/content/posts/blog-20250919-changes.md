@@ -6,9 +6,8 @@ image: 'https://image.091026.xyz/update.webp'
 tags: [更新日志]
 category: '公告'
 draft: false 
-lang: ''
-pinned: true
 ---
+
 :::note
 本篇文章为**枫落丰源原创**，转载前请遵循 [**CC BY-NC-SA 4.0 协议**](https://creativecommons.org/licenses/by-nc-sa/4.0/) ，并声明本篇文章的标题及链接。
 :::
@@ -32,3 +31,5 @@ pinned: true
 现在，友链页面添加了新的要求，并且优化了网站的信息展示。
 
 ![](https://image.091026.xyz/blog-20250919-changes-3.webp "新的友链页面")
+
+
