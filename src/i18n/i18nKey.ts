@@ -2,7 +2,26 @@ enum I18nKey {
 	home = "home",
 	about = "about",
 	archive = "archive",
+	friends = 'friends',
+	anime = "anime",
 	search = "search",
+
+	// 番剧页面
+	animeTitle = "animeTitle",
+	animeSubtitle = "animeSubtitle",
+	animeList = "animeList",
+	animeTotal = "animeTotal",
+	animeWatching = "animeWatching",
+	animeCompleted = "animeCompleted",
+	animeAvgRating = "animeAvgRating",
+	animeStatusWatching = "animeStatusWatching",
+	animeStatusCompleted = "animeStatusCompleted",
+	animeStatusPlanned = "animeStatusPlanned",
+	animeYear = "animeYear",
+	animeStudio = "animeStudio",
+	animeEmpty = "animeEmpty",
+	animeEmptyBangumi = "animeEmptyBangumi",
+	animeEmptyLocal = "animeEmptyLocal",
 
 	tags = "tags",
 	categories = "categories",
@@ -32,7 +51,6 @@ enum I18nKey {
 	author = "author",
 	publishedAt = "publishedAt",
 	license = "license",
-	friends = 'friends',
 }
 
 export default I18nKey;
