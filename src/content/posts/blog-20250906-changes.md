@@ -1,14 +1,13 @@
 ---
-title: 更新日志——2025年9月6日
+title: 更新日志——2025 年 9 月 6 日
 published: 2025-09-06
 description: '本次对博客的页面字体进行了一些小更新'
 image: 'https://image.091026.xyz/update.webp'
 tags: [更新日志]
 category: '公告'
-draft:false
-lang: ''
-pinned: false
+draft: false
 ---
+
 :::note
 本篇文章为**枫落丰源原创**，转载前请遵循 [**CC BY-NC-SA 4.0 协议**](https://creativecommons.org/licenses/by-nc-sa/4.0/) ，并声明本篇文章的标题及链接。
 :::
@@ -27,7 +26,7 @@ pinned: false
 
 ## 文章预告
 
-- [X] **LiteLoaderQQNT 插件的个人使用及心得**，预计明日发布。
+- [x] **LiteLoaderQQNT 插件的个人使用及心得**，预计明日发布。
 
 ## 补充
 

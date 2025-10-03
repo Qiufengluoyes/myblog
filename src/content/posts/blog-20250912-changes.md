@@ -1,5 +1,5 @@
 ---
-title: 更新日志——2025年9月12日
+title: 更新日志——2025 年 9 月 12 日
 published: 2025-09-12
 description: '本次对博客的图片显示进行了一些优化'
 image: 'https://image.091026.xyz/update.webp'
@@ -9,6 +9,7 @@ draft: false
 lang: ''
 pinned: false
 ---
+
 :::note
 本篇文章为**枫落丰源原创**，转载前请遵循 [**CC BY-NC-SA 4.0 协议**](https://creativecommons.org/licenses/by-nc-sa/4.0/) ，并声明本篇文章的标题及链接。
 :::
