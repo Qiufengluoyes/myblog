@@ -38,4 +38,4 @@
 
 ---
 
-非常感谢你的耐心阅读喵~![白洲梓 w-75](https://fengblog.s3.bitiful.net/fast-image/Shirasu-Azusa.webp "白洲梓")
+非常感谢你的耐心阅读喵~![白洲梓 w-75%](https://fengblog.s3.bitiful.net/fast-image/Shirasu-Azusa.webp "白洲梓")
