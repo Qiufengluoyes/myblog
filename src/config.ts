@@ -54,6 +54,11 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.Anime,
 		LinkPreset.About,
 		{
+			name: "说说",
+			url: "https://www.feng1026.top/", // Internal links should not include the base path, as it is automatically added
+			external: true, // Show an external link icon and will open in a new tab
+		},
+		{
 			name: "开往",
 			url: "https://www.travellings.cn/plain.html", // Internal links should not include the base path, as it is automatically added
 			external: true, // Show an external link icon and will open in a new tab
