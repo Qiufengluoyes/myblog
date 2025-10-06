@@ -29,7 +29,7 @@ import fuwariLinkCard from "./src/plugins/fuwari-link-card.ts";
 
 // https://astro.build/config
 export default defineConfig({
-	site: "https://blog.feng1026.top",
+	site: "https://blog.feng1026.top/",
 	base: "/",
 	trailingSlash: "always",
 	integrations: [
