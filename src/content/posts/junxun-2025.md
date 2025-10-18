@@ -8,13 +8,13 @@ category: '校园'
 draft: false
 pinned: false
 ---
-:::note
+:::note[协议声明]
 
 本篇文章为**枫落丰源原创**，转载前请遵循 [**CC BY-NC-SA 4.0 协议**](https://creativecommons.org/licenses/by-nc-sa/4.0/) ，并声明本篇文章的标题及链接。
 
 :::
 
-:::tip
+:::tip[隐私声明]
 
 我们非常注重个人隐私，因此我们对部分图片进行了处理以减少同学们部分隐私泄露的几率。
 

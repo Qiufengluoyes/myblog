@@ -7,7 +7,7 @@ tags: [欧洲卡车模拟 2]
 category: '游戏杂谈'
 draft: true
 ---
-:::note
+:::note[协议声明]
 本篇文章为**枫落丰源原创**，转载前请遵循 [**CC BY-NC-SA 4.0 协议**](https://creativecommons.org/licenses/by-nc-sa/4.0/) ，并声明本篇文章的标题及链接。
 :::
 

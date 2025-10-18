@@ -7,7 +7,7 @@ tags: [Minecraft, Easecation]
 category: '说说'
 draft: false
 ---
-:::note
+:::note[协议声明]
 本篇说说为**枫落丰源原创**，转载前请遵循 [**CC BY-NC-SA 4.0 协议**](https://creativecommons.org/licenses/by-nc-sa/4.0/) ，并声明本篇说说的标题及链接。
 :::
 
