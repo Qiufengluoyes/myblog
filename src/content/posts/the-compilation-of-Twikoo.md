@@ -7,9 +7,8 @@ tags: [Twikoo, 编译]
 category: '技术'
 draft: false
 lang: ''
-pinned: true
+pinned: false
 ---
-
 ## 为什么要自己编译 Twikoo？
 
 在博客由 Typecho 迁移到基于 Astro 的静态博客后，我采用的评论系统便是由 iMaeGoo 开发的 Twikoo 评论系统。
@@ -56,28 +55,26 @@ twikoo.nocss.js.LICENSE.txt
     "docs:build": "cd docs && yarn docs:build"
 ```
 
-其中我注意到了 `"build": "cross-env NODE_ENV=production webpack --mode production",t",` 这一代码，因为本人之前从未研究过`package.json` 文件的组成，并且 npm 和 pnpm 所以我将这一问题抛给了 AI 解答。
+其中我注意到了 `"build": "cross-env NODE_ENV=production webpack --mode production",t",` 这一代码，因为本人之前从未研究过 `package.json` 文件的组成，并且 npm 和 pnpm 所以我将这一问题抛给了 AI 解答。
 
 <details>
 
 <summary>AI 回答（点击展开）</summary>
 
 > 这条命令是一个典型的用于构建生产环境前端资源的 npm script，常见于 `package.json` 文件的 `scripts` 部分。
-> 
+>
 > 让我们分解一下它的各个部分：
-> 
+>
 > 1. **`"build":`**: 这定义了一个名为 `build` 的脚本。你可以通过在终端运行 `npm run build` 或 `yarn build` 来执行它。
-> 
 > 2. **`cross-env NODE_ENV=production`**:
->    
+>
 >    * `cross-env`: 这是一个跨平台的工具，用于设置环境变量。它确保了 `NODE_ENV=production` 这个设置在 Windows、macOS 和 Linux 等不同操作系统上都能正常工作。如果没有 `cross-env`，在 Windows 上直接设置环境变量的语法会不同（例如 `set NODE_ENV=production && webpack...`），这会导致脚本在不同平台上不可移植。
 >    * `NODE_ENV=production`: 这将 Node.js 环境变量 `NODE_ENV` 设置为 `"production"`。这个变量非常重要，因为它会通知 Webpack、Babel 以及其他可能依赖此变量的库（如 React）当前处于生产环境。这通常会触发一系列优化，例如：
 >      * 移除开发时的调试信息和警告。
 >      * 启用代码压缩和混淆（如 TerserPlugin）。
 >      * 可能禁用某些仅用于开发的功能（如 React 的 PropTypes 检查在生产模式下会被剥离）。
-> 
 > 3. **`webpack --mode production`**:
->    
+>
 >    * `webpack`: 调用 Webpack 模块打包工具。
 >    * `--mode production`: 明确告诉 Webpack 使用生产模式进行构建。Webpack 的 `production` 模式会自动应用一系列内置优化，包括：
 >      * 启用 `FlagDependencyUsagePlugin` (标记未使用的导出)。
@@ -87,15 +84,15 @@ twikoo.nocss.js.LICENSE.txt
 >      * 启用 `TerserPlugin` (压缩 JS 代码)。
 >      * 将 `process.env.NODE_ENV` 的值在代码中替换为 `"production"` (这与 `cross-env` 设置的环境变量相辅相成，确保打包后的代码内部也知道是生产环境)。
 >      * 启用 `sideEffects: false` 的 tree shaking (如果在 `package.json` 中配置了)。
-> 
+>
 > **总结:**
-> 
+>
 > 这条 `build` 命令的作用是：
-> 
+>
 > * **跨平台地**设置环境变量 `NODE_ENV` 为 `"production"`。
 > * 调用 Webpack，并**明确指定以生产模式**进行打包。
 > * 最终生成**经过高度优化、压缩、适合部署到线上服务器**的静态资源文件（通常是 `dist` 或 `build` 目录下的 `.js`, `.css`, `.html` 等文件）。
-> 
+>
 > 这是前端项目准备上线前的标准操作。
 
 </details>
