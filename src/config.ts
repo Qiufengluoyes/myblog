@@ -48,19 +48,15 @@ export const siteConfig: SiteConfig = {
 
 export const navBarConfig: NavBarConfig = {
 	links: [
-		LinkPreset.Home,
-		LinkPreset.Archive,
-		LinkPreset.Friends,
-		LinkPreset.Anime,
-		LinkPreset.About,
-		{
-			name: "说说",
-			url: "https://www.feng1026.top/", // Internal links should not include the base path, as it is automatically added
-			external: true, // Show an external link icon and will open in a new tab
-		},
+		{ name: "主页", url: "/", icon: "fa6-solid:house" },
+		{ name: "归档", url: "/archive/", icon: "fa6-solid:box-archive" },
+		{ name: "挚友", url: "/friends/", icon: "fa6-solid:link" },
+		{ name: "追番", url: "/anime/", icon: "fa6-solid:tv" },
+		{ name: "关于", url: "/about/", icon: "fa6-solid:user" },
 		{
 			name: "开往",
 			url: "https://www.travellings.cn/plain.html", // Internal links should not include the base path, as it is automatically added
+			icon: "fa6-solid:train-subway",
 			external: true, // Show an external link icon and will open in a new tab
 		},
 	],
