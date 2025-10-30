@@ -56,7 +56,7 @@ export const navBarConfig: NavBarConfig = {
 		{
 			name: "开往",
 			url: "https://www.travellings.cn/plain.html", // Internal links should not include the base path, as it is automatically added
-			icon: "fa6-solid:train-subway",
+			icon: "fa7-solid:train-subway",
 			external: true, // Show an external link icon and will open in a new tab
 		},
 	],
