@@ -6,6 +6,5 @@ image: ''
 tags: ['网络烂梗','素养']
 category: '社会观察'
 draft: true 
-pinned: true
 ---
 <iframe width="100%" height="468" src="https://player.bilibili.com/player.html?isOutside=true&aid=115388859809848&bvid=BV1abWEzUEJe&cid=33152241017&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" autoplay="0" allowfullscreen="true"> </iframe>
