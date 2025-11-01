@@ -25,7 +25,7 @@ import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
 import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
-import fuwariLinkCard from "./src/plugins/fuwari-link-card.ts";
+import { LinkCardComponent } from "./src/plugins/rehype-component-link-card.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -105,9 +105,6 @@ export default defineConfig({
 		}),
         svelte(),
 		sitemap(),
-		fuwariLinkCard({
-      		internalLink: { enabled: true },
-    	}),
 	],
 	markdown: {
 		 remarkPlugins: [
@@ -139,6 +136,7 @@ export default defineConfig({
 						important: (x, y) => AdmonitionComponent(x, y, "important"),
 						caution: (x, y) => AdmonitionComponent(x, y, "caution"),
 						warning: (x, y) => AdmonitionComponent(x, y, "warning"),
+						"link-card": LinkCardComponent,
 					},
 				},
 			],
@@ -184,7 +182,3 @@ export default defineConfig({
 		},
 	},
 });
-
-// 姓名：胡紫慧
-// ✨   身份证号码：430611201001160042【女 | 2010年1月16日 | 湖南省 岳阳市 君山区】
-// ✨   出生地：湖南省岳阳市君山区

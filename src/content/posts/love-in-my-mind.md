@@ -59,7 +59,9 @@ audio.volume = 0.25;
 
 尽管我们有着不同的身份，但我们也永远无法预测自己与别人的未来——未来，到底是一直这样走下去，还是物是人非，我们都无法给出一个确定的答案。正因为如此，我更想在这段可能有限的时间里，互相给予你我——更多在学习和生活上的指导与关爱。作为一名感性的人，这或许就是我在人际交往上最大的渴望吧~
 
-https://www.bilibili.com/video/BV1ngpHzvEwR/
+::link-card{url="https://www.bilibili.com/video/BV1ngpHzvEwR/" title="哔哩哔哩 - 我探索了一座废弃小学" description="林角小学现状探访"}
 
-https://www.bilibili.com/video/BV1c4sHzrEUU/
+::link-card{url="https://www.bilibili.com/video/BV1c4sHzrEUU/" title="哔哩哔哩 - 此间少年事（定稿）" description="家长会特辑"}
+
+
 
