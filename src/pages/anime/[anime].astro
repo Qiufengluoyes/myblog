@@ -1,0 +1,309 @@
+---
+// src/pages/anime/[anime].astro
+// 1. 导入依赖（复用项目现有组件和配置）
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
+import ImageWrapper from "../../components/misc/ImageWrapper.astro";
+import { i18n } from "../../i18n/translation";
+import I18nKey from "../../i18n/i18nKey";
+import { siteConfig } from "../../config";
+
+// 2. 配置实时刷新：强制每次访问重新请求API（核心！）
+// 选项A：完全实时（推荐，适合频繁更新状态）
+export const dynamic = "force-dynamic";
+// 选项B：增量静态再生（平衡性能，如30分钟刷新一次，按需替换）
+// export const revalidate = 1800; // 单位：秒
+
+// 3. 获取动态路由参数 `anime`（值为番剧ID），并验证合法性
+const { anime: animeParam } = Astro.params; // 参数名与文件名[anime]一致
+// 校验：参数必须存在且为数字（避免无效API请求）
+if (!animeParam || isNaN(Number(animeParam))) {
+  Astro.redirect("/404", 302); // 非法参数直接跳404
+}
+const parsedAnimeId = Number(animeParam); // 转换为数字ID（用于API请求）
+
+// 4. 配置Bangumi API基础信息（复用项目现有配置）
+const BANGUMI_API_BASE = "https://api.bgm.tv";
+const BANGUMI_USER_ID = siteConfig.bangumi?.userId || "your-user-id"; // 替换为你的Bangumi用户ID
+
+// 5. 核心函数：实时获取番剧详情（含用户状态）
+async function fetchAnimeRealTimeData(animeId: number, userId: string) {
+  try {
+    // 5.1 请求番剧基础信息（标题、封面、年份、制作方等）
+    const subjectRes = await fetch(
+      `${BANGUMI_API_BASE}/v0/subjects/${animeId}`, // 用解析后的番剧ID请求
+      {
+        headers: {
+          // 禁用缓存：确保每次获取最新数据
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0",
+        },
+      }
+    );
+    if (!subjectRes.ok) throw new Error(`番剧信息请求失败：${subjectRes.status}`);
+    const subjectData = await subjectRes.json();
+
+    // 5.2 请求当前用户对该番剧的实时状态（进度、评分、观看状态）
+    const collectionRes = await fetch(
+      `${BANGUMI_API_BASE}/v0/users/${userId}/collections/${animeId}`,
+      {
+        headers: { "Cache-Control": "no-cache, no-store, must-revalidate" },
+      }
+    );
+    const collectionData = collectionRes.ok ? await collectionRes.json() : null;
+
+    // 5.3 格式化数据（适配页面渲染）
+    return {
+      // 番剧基础信息
+      id: animeId,
+      title: subjectData.name_cn || subjectData.name || "未知标题",
+      cover: subjectData.images?.medium || "/assets/anime/default.webp",
+      description: subjectData.summary || "暂无详细描述",
+      year: subjectData.date ? new Date(subjectData.date).getFullYear() : "未知",
+      episodes: subjectData.eps || 0, // 总集数
+      genre: subjectData.tags?.slice(0, 5).map((tag: any) => tag.name) || ["未知类型"],
+      studio: subjectData.relations?.find((r: any) => 
+        ["动画制作", "製作", "制作"].includes(r.relation)
+      )?.name || "未知制作方",
+      bangumiRating: subjectData.rating?.score ? Number(subjectData.rating.score.toFixed(1)) : 0, // 番剧公共评分
+
+      // 用户实时状态（核心实时数据）
+      userStatus: collectionData?.type === 3 ? "watching"  // 3=在看
+        : collectionData?.type === 2 ? "completed"        // 2=已完成
+        : collectionData?.type === 1 ? "planned"          // 1=想看
+        : "none",                                         // 未收藏
+      userProgress: collectionData?.ep_status || 0,       // 用户已看集数
+      userRating: collectionData?.rate ? Number(collectionData.rate.toFixed(1)) : 0, // 用户评分
+      bangumiLink: `https://bgm.tv/subject/${animeId}`,  // 跳转Bangumi原页
+    };
+  } catch (error) {
+    console.error(`获取番剧 ${animeId} 实时数据失败：`, error);
+    return null; // 请求失败返回null，后续处理错误
+  }
+}
+
+// 6. 执行实时数据请求
+const animeData = await fetchAnimeRealTimeData(parsedAnimeId, BANGUMI_USER_ID);
+
+// 7. 数据请求失败：设置404状态码
+if (!animeData) {
+  Astro.response.status = 404;
+}
+---
+
+<!-- 页面渲染：分「数据正常」和「数据失败」两种场景 -->
+<MainGridLayout 
+  title={animeData ? animeData.title : i18n(I18nKey.animeNotFound)} 
+  description={animeData ? `《${animeData.title}》实时详情与观看状态` : "番剧不存在或数据加载失败"}
+>
+  {animeData ? (
+    <!-- 场景1：数据正常 - 渲染番剧详情 -->
+    <div class="container mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- 左侧：番剧封面 + 用户状态卡片 -->
+      <div class="md:col-span-1 space-y-6">
+        <!-- 番剧封面 -->
+        <div class="rounded-xl overflow-hidden shadow-lg">
+          <ImageWrapper 
+            src={animeData.cover} 
+            alt={animeData.title}
+            class="w-full aspect-[2/3] object-cover transition-transform hover:scale-105 duration-300"
+          />
+        </div>
+
+        <!-- 用户实时状态卡片 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">
+            {i18n(I18nKey.animeYourStatus)}
+          </h3>
+
+          <!-- 观看状态标签（实时） -->
+          {animeData.userStatus === "watching" && (
+            <span class="inline-block px-3 py-1 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 rounded-full text-sm font-medium mb-4">
+              ▶ {i18n(I18nKey.animeStatusWatching)}
+            </span>
+          )}
+          {animeData.userStatus === "completed" && (
+            <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded-full text-sm font-medium mb-4">
+              ✓ {i18n(I18nKey.animeStatusCompleted)}
+            </span>
+          )}
+          {animeData.userStatus === "planned" && (
+            <span class="inline-block px-3 py-1 bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 rounded-full text-sm font-medium mb-4">
+              ⏰ {i18n(I18nKey.animeStatusPlanned)}
+            </span>
+          )}
+          {animeData.userStatus === "none" && (
+            <span class="inline-block px-3 py-1 bg-gray-100 text-gray-800 dark:bg-gray-700/30 dark:text-gray-300 rounded-full text-sm font-medium mb-4">
+              ❌ {i18n(I18nKey.animeStatusNotCollected)}
+            </span>
+          )}
+
+          <!-- 实时进度条（仅在「在看」状态显示） -->
+          {animeData.userStatus === "watching" && animeData.episodes > 0 && (
+            <div class="mb-4">
+              <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
+                <span>{i18n(I18nKey.animeProgress)}</span>
+                <span>{animeData.userProgress}/{animeData.episodes}</span>
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                <div 
+                  class="bg-green-500 dark:bg-green-400 h-2.5 rounded-full transition-all duration-500"
+                  style={`width: ${(animeData.userProgress / animeData.episodes) * 100}%`}
+                ></div>
+              </div>
+            </div>
+          )}
+
+          <!-- 用户评分（实时） -->
+          {animeData.userRating > 0 && (
+            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+              <span class="mr-2">{i18n(I18nKey.animeYourRating)}：</span>
+              <span class="text-orange-500 font-bold text-lg">{animeData.userRating}</span>
+              <svg class="w-4 h-4 text-yellow-400 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <!-- 右侧：番剧详情信息 -->
+      <div class="md:col-span-2 space-y-6">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+            {animeData.title}
+          </h1>
+          <!-- 基础信息栏 -->
+          <div class="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mt-4">
+            <div>
+              <span class="font-medium text-gray-800 dark:text-gray-300">{i18n(I18nKey.animeYear)}：</span>
+              {animeData.year}
+            </div>
+            <div>
+              <span class="font-medium text-gray-800 dark:text-gray-300">{i18n(I18nKey.animeEpisodes)}：</span>
+              {animeData.episodes} {i18n(I18nKey.animeEpisodesUnit)}
+            </div>
+            <div>
+              <span class="font-medium text-gray-800 dark:text-gray-300">{i18n(I18nKey.animeStudio)}：</span>
+              {animeData.studio}
+            </div>
+            <div>
+              <span class="font-medium text-gray-800 dark:text-gray-300">{i18n(I18nKey.animeBangumiRating)}：</span>
+              <span class="text-orange-500">{animeData.bangumiRating}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 类型标签 -->
+        <div class="flex flex-wrap gap-2">
+          {animeData.genre.map((tag: string, index: number) => (
+            <span 
+              key={index} 
+              class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full text-xs"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <!-- 详细描述 -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">
+            {i18n(I18nKey.animeDescription)}
+          </h3>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
+            {animeData.description}
+          </p>
+        </div>
+
+        <!-- 操作按钮：跳转Bangumi -->
+        <a 
+          href={animeData.bangumiLink} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+          </svg>
+          {i18n(I18nKey.animeViewOnBangumi)}
+        </a>
+      </div>
+    </div>
+  ) : (
+    <!-- 场景2：数据失败 - 显示错误提示 -->
+    <div class="container mx-auto px-4 py-16 text-center">
+      <div class="text-6xl mb-6">😢</div>
+      <h3 class="text-2xl font-medium text-gray-900 dark:text-white mb-3">
+        {i18n(I18nKey.animeNotFound)}
+      </h3>
+      <p class="text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-8">
+        {i18n(I18nKey.animeNotFoundDesc)}（可能是番剧ID无效或Bangumi API请求失败）
+      </p>
+      <a 
+        href="/anime" 
+        class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        {i18n(I18nKey.animeBackToList)}
+      </a>
+    </div>
+  )}
+</MainGridLayout>
+
+<!-- 可选：客户端手动刷新按钮（避免页面全量刷新，增强体验） -->
+{animeData && (
+  <script>
+    // 手动刷新按钮逻辑（需在页面中添加按钮DOM，此处省略，可参考前文）
+    const addRefreshButton = () => {
+      const btnContainer = document.querySelector('.md\\:col-span-2');
+      if (!btnContainer) return;
+
+      // 创建刷新按钮
+      const refreshBtn = document.createElement('button');
+      refreshBtn.className = 'mt-4 ml-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-sm';
+      refreshBtn.textContent = '手动刷新数据';
+      refreshBtn.style.cursor = 'pointer';
+
+      // 添加按钮到页面
+      btnContainer.appendChild(refreshBtn);
+
+      // 点击事件：重新请求数据并更新DOM
+      refreshBtn.addEventListener('click', async () => {
+        refreshBtn.disabled = true;
+        refreshBtn.textContent = '刷新中...';
+
+        try {
+          // 客户端请求后端代理接口（避免CORS，需自行实现）
+          const res = await fetch(`/api/anime/${animeData.id}`, {
+            headers: { "Cache-Control": "no-cache" }
+          });
+          const newData = await res.json();
+
+          // 更新进度和状态（示例：可扩展更多字段）
+          if (newData.userProgress !== undefined) {
+            const progressText = document.querySelector('.flex.justify-between.text-sm span:last-child');
+            const progressBar = document.querySelector('.bg-green-500, .bg-green-400');
+            if (progressText) progressText.textContent = `${newData.userProgress}/${newData.episodes}`;
+            if (progressBar && newData.episodes > 0) {
+              progressBar.style.width = `${(newData.userProgress / newData.episodes) * 100}%`;
+            }
+          }
+
+          alert('数据已刷新至最新！');
+        } catch (err) {
+          alert('刷新失败，请重试！');
+          console.error('客户端刷新失败：', err);
+        } finally {
+          refreshBtn.disabled = false;
+          refreshBtn.textContent = '手动刷新数据';
+        }
+      });
+    };
+
+    // 页面加载完成后添加按钮
+    window.addEventListener('load', addRefreshButton);
+  </script>
+)}

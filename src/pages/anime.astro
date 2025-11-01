@@ -1,4 +1,5 @@
 ---
+export const dynamic = "force-dynamic"; 
 import ImageWrapper from "../components/misc/ImageWrapper.astro";
 import { siteConfig } from "../config";
 import localAnimeList from "../data/anime";
@@ -274,21 +275,18 @@ const stats = {
                 <div class="group relative bg-[var(--card-bg)] border border-[var(--line-divider)] rounded-[var(--radius-large)] overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
                   <!-- 封面区域 - 竖屏比例 -->
                   <div class="relative aspect-[2/3] overflow-hidden">
-                    <a href={anime.link} target="_blank" rel="noopener noreferrer" class="block w-full h-full">
+                    <a 
+                      href={`/anime/${anime.subjectId}`}
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      class="block w-full h-full"
+                    >
+                      <!-- 卡片内容（封面、标题等）保持不变 -->
                       <ImageWrapper 
                         src={anime.cover} 
                         alt={anime.title}
-                        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        class="w-full aspect-[2/3] object-cover"
                       />
-                      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                          <div class="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center">
-                            <svg class="w-6 h-6 text-gray-800 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M8 5v14l11-7z"/>
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
                     </a>
                     
                     <!-- 状态标签 -->
