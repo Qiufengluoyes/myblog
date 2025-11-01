@@ -48,7 +48,6 @@ export const siteConfig: SiteConfig = {
 
 export const navBarConfig: NavBarConfig = {
 	links: [
-		{ name: "主页", url: "/", icon: "fa6-solid:house" },
 		{ name: "归档", url: "/archive/", icon: "fa6-solid:box-archive" },
 		{ name: "挚友", url: "/friends/", icon: "fa7-solid:link" },
 		{ name: "追番", url: "/anime/", icon: "fa7-solid:display" },
