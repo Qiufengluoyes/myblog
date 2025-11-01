@@ -26,13 +26,14 @@ import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 import fuwariLinkCard from "./src/plugins/fuwari-link-card.ts";
-import node from '@astrojs/node';
 
 // https://astro.build/config
 export default defineConfig({
 	site: "https://blog.feng1026.top/",
 	base: "/",
 	trailingSlash: "always",
+	output: 'server', // 关键：指定输出模式为「服务端渲染（SSR）」
+  	adapter: vercel(), // 绑定 Vercel 适配器，适配 Vercel 环境
 	integrations: [
 		tailwind({
 			nesting: true,
