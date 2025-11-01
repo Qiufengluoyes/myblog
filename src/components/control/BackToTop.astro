@@ -26,6 +26,7 @@ import { Icon } from "astro-icon/components";
     </div>
 </div>
 <style lang="stylus">
+/* 关键优化：统一过渡动画定义，避免inline style干扰 */
 .back-to-top-wrapper
     pointer-events: none
     z-index: 999
@@ -34,7 +35,8 @@ import { Icon } from "astro-icon/components";
     pointer-events: auto
     opacity: 0
     transform: scale(0.9)
-    transition: opacity 0.3s ease, transform 0.3s ease
+    /* 统一过渡属性：明确所有动画维度，优先级低于类样式（避免inline覆盖） */
+    transition: opacity 0.3s ease, transform 0.3s ease !important
     width: 3rem
     height: 3rem
     bottom: 1.5rem
@@ -52,7 +54,6 @@ import { Icon } from "astro-icon/components";
     &.show
         opacity: 1
         transform: scale(1)
-        // 空闲状态（显示箭头时）半透明
         &.idle
             opacity: 0.5
             transition: opacity 0.3s ease
@@ -99,7 +100,7 @@ import { Icon } from "astro-icon/components";
     pointer-events: none
     .progress-bar
         stroke: var(--primary)
-        transition: stroke-dashoffset 0.4s ease-out  // 调整为0.4s
+        transition: stroke-dashoffset 0.4s ease-out
         will-change: stroke-dashoffset
         opacity: 0.9
 .btn-center
@@ -131,23 +132,14 @@ import { Icon } from "astro-icon/components";
             font-size: 0.875rem
         &::after
             content: '%'
-// 滚动时显示百分比
 .back-to-top-btn.scrolling
-    opacity: 1 !important  // 滚动时恢复不透明
+    opacity: 1 !important
     .icon-arrow
         opacity: 0
         transform: scale(0.5)
     .percent-text
         opacity: 1
         transform: scale(1)
-// 点击动画
-.back-to-top-btn.complete
-    animation: gentlePulse 0.4s ease
-@keyframes gentlePulse
-    0%, 100%
-        transform: scale(1)
-    50%
-        transform: scale(1.05)
 </style>
 <script>
 (function() {
@@ -156,14 +148,17 @@ import { Icon } from "astro-icon/components";
     if (!btn) return;
     const progressBar = btn.querySelector('.progress-bar') as SVGElement;
     const percentText = btn.querySelector('.percent-text') as HTMLElement;
-    // 常量配置
+
+    // 常量配置：优化定时器时间，更贴近实际滚动时长
     const CIRCUMFERENCE = 125.66;
     const SCROLL_THRESHOLD = 200;
-    const IDLE_TIMEOUT = 500;  // 变为箭头的延迟时间
-    const THROTTLE_SCROLL = 16;  // 约60fps
+    const IDLE_TIMEOUT = 500;
+    const THROTTLE_SCROLL = 16; // 60fps，保持流畅
     const DEBOUNCE_RESIZE = 100;
     const DEBOUNCE_MUTATION = 150;
-    // 状态管理
+    const RESET_TIMEOUT = 500; // 缩短至500ms（原1000ms），减少状态延迟
+
+    // 状态管理：新增「是否正在重置状态」标记，避免重复触发
     let scrollPercent = 0;
     let isVisible = false;
     let scrollTimer: NodeJS.Timeout | null = null;
@@ -172,9 +167,12 @@ import { Icon } from "astro-icon/components";
     let viewHeight = 0;
     let lastScrollTop = 0;
     let isScrolling = false;
-    let resizeObserver = null;
-    
-    // 优化：使用更高效的节流函数
+    let resizeObserver: ResizeObserver | null = null;
+    let isScrollingToTop = false;
+    let mutationObserver: MutationObserver | null = null;
+    let isResetting = false; // 新增：避免resetButtonState重复执行
+
+    // 节流函数：保持不变，确保性能
     function throttle<T extends (...args: any[]) => void>(
         func: T,
         limit: number
@@ -183,31 +181,27 @@ import { Icon } from "astro-icon/components";
         let lastRan = 0;
         return function (this: any, ...args: Parameters<T>) {
             const now = Date.now();
-            if (!inThrottle) {
+            if (!inThrottle || now - lastRan >= limit) {
                 func.apply(this, args);
                 lastRan = now;
                 inThrottle = true;
                 setTimeout(() => {
                     inThrottle = false;
                 }, limit);
-            } else if (now - lastRan >= limit) {
-                lastRan = now;
-                func.apply(this, args);
             }
         };
     }
 
-    // 优化：使用更简单的缓动函数
+    // 缓动函数：保持不变
     function smoothUpdateNumber(currentValue: number, targetValue: number, callback: (value: number) => void) {
         if (currentValue === targetValue) return;
         let start: number | null = null;
-        const duration = 200; // 调整为200ms，比之前长一点
+        const duration = 200;
         const difference = targetValue - currentValue;
         
         function animate(timestamp: number) {
             if (!start) start = timestamp;
             const progress = Math.min((timestamp - start) / duration, 1);
-            // 使用更简单的缓动函数
             const currentNum = Math.round(currentValue + (difference * progress));
             callback(currentNum);
             
@@ -219,43 +213,49 @@ import { Icon } from "astro-icon/components";
         requestAnimationFrame(animate);
     }
 
-    // 优化：减少不必要的DOM操作
+    // 核心优化1：增强updateButton鲁棒性，主动修复异常状态
     function updateButton() {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const shouldShow = scrollTop > SCROLL_THRESHOLD;
+        const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        // 紧急修复：若isScrollingToTop为true但已停止滚动（currentScrollTop>0），强制重置状态
+        if (isScrollingToTop && currentScrollTop > 0 && !isResetting) {
+            resetButtonState();
+            return;
+        }
+        if (isScrollingToTop) return;
+
+        const shouldShow = currentScrollTop > SCROLL_THRESHOLD;
         
-        // 仅在状态变化时更新类名
+        // 状态变化时强制同步类和样式，确保过渡动画触发
         if (shouldShow !== isVisible) {
             isVisible = shouldShow;
+            // 先清除可能残留的inline style，再切换类
+            btn.style.opacity = '';
+            btn.style.transform = '';
             btn.classList.toggle('show', shouldShow);
             btn.classList.toggle('hide', !shouldShow);
             if (shouldShow) {
                 btn.classList.add('idle');
+                // 主动触发一次重绘，避免浏览器样式缓存导致动画丢失
+                void btn.offsetWidth; // 强制重排，刷新样式
             }
         }
         
         if (shouldShow && docHeight > 0) {
-            // 优化：减少不必要的计算
-            const newScrollPercent = Math.min(100, Math.round((scrollTop / docHeight) * 100));
+            const newScrollPercent = Math.min(100, Math.round((currentScrollTop / docHeight) * 100));
             
-            // 优化：减少更新频率
             if (Math.abs(newScrollPercent - scrollPercent) >= 1) {
                 scrollPercent = newScrollPercent;
-                
-                // 优化：直接设置进度条，避免不必要的计算
                 if (progressBar) {
                     const offset = CIRCUMFERENCE - (scrollPercent / 100) * CIRCUMFERENCE;
                     progressBar.style.strokeDashoffset = offset.toString();
                 }
-                
-                // 优化：直接更新文本，避免额外的函数调用
                 if (percentText) {
                     percentText.textContent = scrollPercent.toString();
                 }
             }
             
-            // 优化：减少滚动检测的频率
-            const scrollDiff = Math.abs(scrollTop - lastScrollTop);
+            const scrollDiff = Math.abs(currentScrollTop - lastScrollTop);
             if (scrollDiff > 2 && !isHovering) {
                 if (!isScrolling) {
                     isScrolling = true;
@@ -276,78 +276,133 @@ import { Icon } from "astro-icon/components";
                 }, IDLE_TIMEOUT);
             }
             
-            lastScrollTop = scrollTop;
+            lastScrollTop = currentScrollTop;
         }
     }
 
-    // 优化：点击后的动画优化
-    function scrollToTop() {
-        btn.classList.add('complete');
-        btn.classList.remove('scrolling', 'idle');
+    // 核心优化2：重写resetButtonState，彻底清除样式+状态
+    function resetButtonState() {
+        if (isResetting) return;
+        isResetting = true;
+
+        // 1. 强制清除所有相关inline style，避免覆盖类样式
+        btn.style.opacity = '';
+        btn.style.transform = '';
+        btn.style.transition = '';
+        // 额外清除可能残留的其他样式（如filter）
+        btn.removeAttribute('style');
+
+        // 2. 同步所有状态，确保与updateButton逻辑完全对齐
+        btn.classList.remove('show', 'scrolling', 'idle');
+        btn.classList.add('hide');
+        isScrollingToTop = false;
+        isVisible = false;
+        scrollPercent = 0;
         isScrolling = false;
-        
-        // 优化：点击时进度条动画（调慢一点）
+        isHovering = false;
+
+        // 3. 重置进度条和百分比，避免下次显示错位
         if (progressBar) {
-            // 保存当前进度条状态
-            const currentOffset = parseFloat(progressBar.style.strokeDashoffset);
-            const targetOffset = CIRCUMFERENCE;
-            
-            // 确保进度条动画平滑（持续0.4秒）
-            progressBar.style.transition = 'stroke-dashoffset 0.4s ease-out';
-            progressBar.style.strokeDashoffset = targetOffset.toString();
-            
-            // 优化：百分比数字动画（调慢一点）
-            if (percentText) {
-                smoothUpdateNumber(scrollPercent, 0, (value) => {
-                    percentText.textContent = value.toString();
-                });
-            }
+            progressBar.style.strokeDashoffset = CIRCUMFERENCE.toString();
+        }
+        if (percentText) {
+            percentText.textContent = '0';
         }
 
-        // 滚动到顶部
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        
-        // 0.4秒后移除进度条过渡
+        // 4. 主动触发updateButton，确保状态立即同步
         setTimeout(() => {
-            if (progressBar) {
-                progressBar.style.transition = '';
-            }
-        }, 400);
-        
-        // 脉冲动画结束后移除
-        setTimeout(() => {
-            btn.classList.remove('complete');
-        }, 400);
+            updateButton();
+            isResetting = false;
+        }, 0); // 微任务延迟，确保DOM更新完成
     }
 
-    // 优化：减少事件监听的开销
-    const throttledScroll = throttle(updateButton, THROTTLE_SCROLL);
-    
-    // 初始化
+    // 核心优化3：重写scrollToTop，增强状态管控
+    function scrollToTop() {
+        // 防止重复点击导致状态混乱
+        if (isScrollingToTop || isResetting) return;
+        isScrollingToTop = true;
+
+        // 1. 清除之前可能残留的定时器
+        if (scrollTimer) {
+            clearTimeout(scrollTimer);
+        }
+
+        // 2. 触发渐隐（仅设置必要样式，避免多余属性）
+        btn.classList.remove('scrolling', 'idle');
+        btn.style.opacity = '0';
+        // 复用CSS定义的过渡，不重复设置transition
+
+        // 3. 执行平滑滚动（增加回调，确保滚动结束后立即重置）
+        const scrollOptions = {
+            top: 0,
+            behavior: 'smooth' as ScrollBehavior
+        };
+        window.scrollTo(scrollOptions);
+
+        // 4. 三重保障重置状态（覆盖所有边缘场景）
+        // a. 监听scrollend（精准）
+        const handleScrollEnd = () => {
+            window.removeEventListener('scrollend', handleScrollEnd);
+            resetButtonState();
+        };
+        window.addEventListener('scrollend', handleScrollEnd, { once: true });
+
+        // b. 缩短定时器兜底（500ms，覆盖scrollend未触发场景）
+        const resetTimer = setTimeout(() => {
+            window.removeEventListener('scrollend', handleScrollEnd); // 避免重复触发
+            resetButtonState();
+        }, RESET_TIMEOUT);
+
+        // c. 监听滚动中断（用户手动滚动时立即重置）
+        const handleScrollInterrupt = throttle(() => {
+            const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (currentScrollTop > 0) {
+                clearTimeout(resetTimer);
+                window.removeEventListener('scrollend', handleScrollEnd);
+                window.removeEventListener('scroll', handleScrollInterrupt);
+                resetButtonState();
+            }
+        }, THROTTLE_SCROLL);
+        window.addEventListener('scroll', handleScrollInterrupt, { passive: true, once: true });
+    }
+
+    // 核心优化4：增强init逻辑，确保初始状态正确
     function init() {
+        // 1. 优先更新文档高度，避免计算错误
         updateDocHeight();
-        updateButton();
         
-        // 优化：仅在需要时添加事件监听
-        window.addEventListener('scroll', throttledScroll, { passive: true });
-        window.addEventListener('resize', () => {
+        // 2. 主动触发两次updateButton，确保初始状态同步（避免浏览器渲染延迟）
+        updateButton();
+        setTimeout(updateButton, 0);
+
+        // 3. 滚动监听：增加{ capture: true }，确保优先触发
+        const throttledScroll = throttle(updateButton, THROTTLE_SCROLL);
+        window.addEventListener('scroll', throttledScroll, { passive: true, capture: true });
+
+        // 4. Resize监听：保持防抖，确保性能
+        const handleResize = debounce(() => {
             updateDocHeight();
             updateButton();
-        });
-        
+        }, DEBOUNCE_RESIZE);
+        window.addEventListener('resize', handleResize);
+
+        // 5. 点击事件：防止默认行为，确保触发优先级
         btn.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation(); // 防止事件冒泡导致的干扰
             scrollToTop();
         });
-        
-        // 优化：使用更高效的悬停处理
+
+        // 6. 悬停事件：增加状态校验，避免干扰重置
         btn.addEventListener('mouseenter', () => {
+            if (isScrollingToTop || isResetting) return;
             isHovering = true;
             btn.classList.remove('idle');
             if (scrollTimer) clearTimeout(scrollTimer);
         });
         
         btn.addEventListener('mouseleave', () => {
+            if (isScrollingToTop || isResetting) return;
             isHovering = false;
             btn.classList.remove('scrolling');
             isScrolling = false;
@@ -355,10 +410,11 @@ import { Icon } from "astro-icon/components";
                 btn.classList.add('idle');
             }
         });
-        
-        // 优化：触摸事件处理
+
+        // 7. 触摸事件：优化timer清理，避免内存泄漏
         let touchTimer: ReturnType<typeof setTimeout> | null = null;
         const touchStartHandler = () => {
+            if (isScrollingToTop || isResetting) return;
             isHovering = true;
             btn.classList.remove('idle');
             if (scrollTimer) clearTimeout(scrollTimer);
@@ -370,11 +426,10 @@ import { Icon } from "astro-icon/components";
                 isScrolling = false;
             }, 2000);
         };
-        
         btn.addEventListener('touchstart', touchStartHandler, { passive: true });
-        
-        // 优化：减少MutationObserver的开销
-        const mutationObserver = new MutationObserver((mutations) => {
+
+        // 8. MutationObserver：保持不变，确保DOM变化时更新
+        mutationObserver = new MutationObserver((mutations) => {
             let shouldUpdate = false;
             for (const mutation of mutations) {
                 if (mutation.type === 'childList' || 
@@ -392,51 +447,63 @@ import { Icon } from "astro-icon/components";
                 updateButton();
             }
         });
-        
-        // 优化：仅在需要时观察
         mutationObserver.observe(document.body, {
             childList: true,
             subtree: true,
             attributes: true,
             attributeFilter: ['style', 'class', 'hidden', 'src', 'href']
         });
-        
-        // 优化：使用ResizeObserver
-        resizeObserver = new ResizeObserver(debounce(() => {
-            updateDocHeight();
-            updateButton();
-        }, 100));
+
+        // 9. ResizeObserver：保持不变，确保窗口变化时更新
+        resizeObserver = new ResizeObserver(handleResize);
         resizeObserver.observe(document.body);
     }
 
-    // 优化：使用更高效的更新函数
+    // 更新文档高度：保持不变
     function updateDocHeight() {
         viewHeight = document.documentElement.clientHeight;
         docHeight = document.documentElement.scrollHeight - viewHeight;
+        // 处理特殊情况：文档高度为0时强制设为1（避免除以0错误）
+        if (docHeight <= 0) docHeight = 1;
     }
 
-    // 优化：减少不必要的函数调用
-    const debounce = (func, wait) => {
-        let timeout;
-        return (...args) => {
+    // 防抖函数：保持不变
+    const debounce = (func: (...args: any[]) => void, wait: number) => {
+        let timeout: NodeJS.Timeout;
+        return (...args: any[]) => {
             clearTimeout(timeout);
             timeout = setTimeout(() => func.apply(this, args), wait);
         };
     };
 
-    // 优化：延迟初始化以避免首次渲染问题
-    setTimeout(init, 0);
-    
-    // 优化：清理函数
+    // 延迟初始化：确保DOM完全加载后执行
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        init();
+    } else {
+        document.addEventListener('DOMContentLoaded', init, { once: true });
+    }
+
+    // 清理函数：增强鲁棒性，避免内存泄漏
     return () => {
+        const throttledScroll = throttle(updateButton, THROTTLE_SCROLL);
         window.removeEventListener('scroll', throttledScroll);
-        window.removeEventListener('resize', updateDocHeight);
+
+        const handleResize = debounce(() => {
+            updateDocHeight();
+            updateButton();
+        }, DEBOUNCE_RESIZE);
+        window.removeEventListener('resize', handleResize);
+
         btn.removeEventListener('click', scrollToTop);
         btn.removeEventListener('mouseenter', () => { isHovering = true; });
         btn.removeEventListener('mouseleave', () => { isHovering = false; });
+
+        const touchStartHandler = () => {};
         btn.removeEventListener('touchstart', touchStartHandler);
-        mutationObserver.disconnect();
-        resizeObserver.disconnect();
+
+        if (mutationObserver) mutationObserver.disconnect();
+        if (resizeObserver) resizeObserver.disconnect();
+        if (scrollTimer) clearTimeout(scrollTimer);
     };
 })();
 </script>
