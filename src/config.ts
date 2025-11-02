@@ -19,7 +19,7 @@ export const siteConfig: SiteConfig = {
 	banner: {
 		enable: true,
 		src: "https://image.091026.xyz/img0.webp", 
-		position: "center", 
+		position: "center", // 'top', 'center', 'bottom'
 		credit: {
 			enable: true, 
 			text: "初音未来-Deco27", 
