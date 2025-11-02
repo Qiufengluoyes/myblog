@@ -10,14 +10,13 @@ pinned: true
 ---
 
 <p align="center">
-	<audio src="https://fengblog.s3.bitiful.net/music/%E5%B0%8F%E5%A4%9C%E7%81%AF%20-%20%E7%81%B0%E6%BE%88.mp3" preload="auto" controls loop autoplay controlsList=”nodownload”>
+	<audio src="https://fengblog.s3.bitiful.net/music/%E5%B0%8F%E5%A4%9C%E7%81%AF%20-%20%E7%81%B0%E6%BE%88.mp3" controlsList="nodownload" oncontextmenu="return false" preload="auto" controls="controls" loop autoplay>
 	</audio>
 </p>
 <script>
 var audio = document.querySelector('audio');
 audio.volume = 0.5;
 </script>
-
 
 
 <p align="center">灰澈——小夜灯</p>
