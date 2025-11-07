@@ -37,5 +37,6 @@ export async function GET(context: APIContext) {
 			};
 		}),
 		customData: `<language>${siteConfig.lang}</language>`,
+		stylesheet: '/rss/styles.xsl',
 	});
 }

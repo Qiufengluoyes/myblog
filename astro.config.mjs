@@ -104,7 +104,9 @@ export default defineConfig({
 			}
 		}),
         svelte(),
-		sitemap(),
+		sitemap({
+			stylesheet: '/sitemap/styles.xsl',
+		}),
 	],
 	markdown: {
 		 remarkPlugins: [
