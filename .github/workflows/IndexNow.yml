@@ -1,4 +1,4 @@
-name: 'IndexNow'
+name: IndexNow
 on:
   schedule:
     # Set the schedule time
@@ -12,4 +12,4 @@ jobs:
         uses: bojieyang/indexnow-action@v2
         with:
           sitemap-location: 'https://blog.feng1026.top/sitemap-0.xml'
-          key: ${{ secrets.INDEXNOW_KEY }}
+          key: 6e68c23a77f0470b997596650c9db282
