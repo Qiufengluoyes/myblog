@@ -12,6 +12,12 @@ module.exports = {
 					...defaultTheme.fontFamily.sans,
 				],
 			},
+            codeFontFamily: {
+                sans: [
+                    "JetBrains Mono Variable",
+                    ...defaultTheme.fontFamily.sans,
+                ]
+            },
 		},
 	},
 	plugins: [require("@tailwindcss/typography")],
