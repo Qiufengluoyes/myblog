@@ -18,7 +18,7 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: true,
-		src: "https://image.091026.xyz/img0.webp", 
+		src: "https://img.091026.xyz/blog/home-winter-blog.webp", 
 		position: "center", // 'top', 'center', 'bottom'
 		credit: {
 			enable: true, 
