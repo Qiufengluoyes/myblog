@@ -1,28 +1,24 @@
 {
-  "extends": "astro/tsconfigs/strict",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "strictNullChecks": true,
-    "allowJs": false,
-    "declaration": true,
-    "plugins": [
-      {
-        "name": "@astrojs/ts-plugin"
-      }
-    ],
-    "paths": {
-      "@components/*": ["src/components/*"],
-      "@assets/*": ["src/assets/*"],
-      "@constants/*": ["src/constants/*"],
-      "@utils/*": ["src/utils/*"],
-      "@i18n/*": ["src/i18n/*"],
-      "@layouts/*": ["src/layouts/*"],
-      "@/*": ["src/*"]
-    }
-  },
-  "include": ["src/**/*"]
+	"extends": "astro/tsconfigs/strict",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"strictNullChecks": true,
+		"allowJs": false,
+		"declaration": true,
+		"plugins": [
+			{
+				"name": "@astrojs/ts-plugin"
+			}
+		],
+		"paths": {
+			"@components/*": ["src/components/*"],
+			"@assets/*": ["src/assets/*"],
+			"@constants/*": ["src/constants/*"],
+			"@utils/*": ["src/utils/*"],
+			"@i18n/*": ["src/i18n/*"],
+			"@layouts/*": ["src/layouts/*"],
+			"@/*": ["src/*"]
+		}
+	},
+	"include": ["src/**/*"]
 }
-
-// 姓名：胡紫慧
-// ✨   身份证号码：430611201001160042【女 | 2010年1月16日 | 湖南省 岳阳市 君山区】
-// ✨   出生地：湖南省岳阳市君山区
