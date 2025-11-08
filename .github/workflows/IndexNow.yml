@@ -1,4 +1,4 @@
-name: 'IndexNow'
+name: IndexNow Action
 on:
   schedule:
     # Set the schedule time
@@ -9,11 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: indexnow-action
-        uses: bojieyang/indexnow-action@v2
+        uses: bojieyang/indexnow-action@v2.1.0
         with:
           sitemap-location: 'https://blog.feng1026.top/sitemap-0.xml'
-          key: ${{ secrets.INDEXNOW_KEY }}
-      - name: Setup IndexNow 
-      # Generate files dynamically to prevent them from being leaked in public repositories.
-      # This example will put the file in the root directory of the site.You may change the location by yourself.
-        run: echo ${{ secrets.INDEXNOW_KEY }} > ${{ secrets.INDEXNOW_KEY }}.txt
+          key: '6e68c23a77f0470b997596650c9db282'
