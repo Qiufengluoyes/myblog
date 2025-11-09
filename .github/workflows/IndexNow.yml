@@ -2,7 +2,7 @@ name: IndexNow Action
 on:
   schedule:
     # Set the schedule time
-    - cron: '*/15 * * * *'
+    - cron: '*/5 * * * *'
 
 jobs:
   check-and-submit:
