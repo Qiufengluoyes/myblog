@@ -75,11 +75,6 @@ export const profileConfig: ProfileConfig = {
 			url: "https://space.bilibili.com/1735270180/",
 		},
 		{
-			name: "Steam",
-			icon: "mdi:steam",
-			url: "https://steamcommunity.com/id/qiufengluoye44/",
-		},
-		{
 			name: "GitHub",
 			icon: "tabler:brand-github",
 			url: "https://github.com/Qiufengluoyes",
@@ -90,9 +85,14 @@ export const profileConfig: ProfileConfig = {
 			url: "mailto:qiufengluoyes@outlook.com",
 		},
 		{
-			name: "开往-友链接力",
-			icon: "ic:sharp-directions-subway",
-			url: "https://www.travellings.cn/plain.html",
+			name: "Steam",
+			icon: "mdi:steam",
+			url: "https://steamcommunity.com/id/qiufengluoye44/",
+		},
+		{
+			name: "Rss 订阅",
+			icon: "tabler:rss",
+			url: "https://blog.feng1026.top/rss.xml",
 		},
 	],
 };
