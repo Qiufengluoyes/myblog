@@ -2,7 +2,7 @@ name: IndexNow Action
 on:
   schedule:
     # Set the schedule time
-    - cron: '0 2 * * *'
+    - cron: '*/15 * * * *'
 
 jobs:
   check-and-submit:
@@ -12,4 +12,4 @@ jobs:
         uses: bojieyang/indexnow-action@v2.1.0
         with:
           sitemap-location: 'https://blog.feng1026.top/sitemap-0.xml'
-          key: '6e68c23a77f0470b997596650c9db282'
+          key: ${{ secrets.INDEXNOW_KEY }}
