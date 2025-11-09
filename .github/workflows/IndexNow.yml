@@ -13,3 +13,5 @@ jobs:
         with:
           sitemap-location: 'https://blog.feng1026.top/sitemap-0.xml'
           key: ${{ secrets.INDEXNOW_KEY }}
+      - name: Setup IndexNow
+        run: echo ${{ secrets.INDEXNOW_KEY }} > ${{ secrets.INDEXNOW_KEY }}.txt
