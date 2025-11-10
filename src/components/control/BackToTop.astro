@@ -1,509 +1,311 @@
 ---
 import { Icon } from "astro-icon/components";
 ---
-<div class="back-to-top-wrapper">
-    <div id="back-to-top-btn" class="back-to-top-btn hide">
-        <button aria-label="Back to Top" class="btn-card">
-            <svg class="progress-ring" viewBox="0 0 48 48">
-                <circle
-                    class="progress-bar"
-                    cx="24"
-                    cy="24"
-                    r="20"
+
+<!-- There can't be a filter on parent element, or it will break `fixed` -->
+<div class="back-to-top-wrapper hidden lg:block">
+    <div id="back-to-top-btn" class="back-to-top-btn hide flex items-center justify-center rounded-2xl overflow-visible transition" onclick="backToTop()">
+        <!-- 按钮主体 -->
+        <button aria-label="Back to Top" class="btn-card h-[3.75rem] w-[3.75rem] rounded-2xl relative flex flex-col items-center justify-center">
+            <!-- 圆角矩形进度条 SVG -->
+            <svg class="progress-ring" width="60" height="60" viewBox="0 0 60 60">
+                <!-- 背景矩形（遮罩层，显示未涉及的部分） -->
+                <rect
+                    class="progress-ring-bg"
+                    x="1.5"
+                    y="1.5"
+                    width="57"
+                    height="57"
+                    rx="16"
                     fill="none"
-                    stroke-width="2.5"
+                    stroke-width="3.1"
                     stroke-linecap="round"
-                    stroke-dasharray="125.66"
-                    stroke-dashoffset="125.66"
+                    stroke-linejoin="round"
+                />
+                <!-- 进度矩形 -->
+                <rect
+                    id="progress-ring-path"
+                    class="progress-ring-path"
+                    x="1.5"
+                    y="1.5"
+                    width="57"
+                    height="57"
+                    rx="16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-dasharray="200.53"
+                    stroke-dashoffset="200.53"
+                    opacity="0"
                 />
             </svg>
-            <div class="btn-center">
-                <Icon name="material-symbols:keyboard-arrow-up-rounded" 
-                      class="icon-arrow" />
-                <span class="percent-text">0</span>
+            
+            <!-- 上升图标 -->
+            <div id="back-to-top-icon" class="icon-wrapper relative z-10 transition-all duration-300 flex items-center justify-center">
+                <Icon name="material-symbols:keyboard-arrow-up-rounded"></Icon>
+            </div>
+            <!-- 进度百分比标签 -->
+            <div id="back-to-top-progress-label" class="progress-label relative z-10 opacity-0 transition-all duration-300 text-xs font-medium flex items-center justify-center">
+                <span id="back-to-top-progress-text">0%</span>
             </div>
         </button>
     </div>
 </div>
+
 <style lang="stylus">
-/* 关键优化：统一过渡动画定义，避免inline style干扰 */
 .back-to-top-wrapper
+    width: 3.75rem
+    height: 3.75rem
+    position: absolute
+    right: 0
+    top: 0
     pointer-events: none
-    z-index: 999
+
 .back-to-top-btn
-    position: fixed
-    pointer-events: auto
-    opacity: 0
-    transform: scale(0.9)
-    /* 统一过渡属性：明确所有动画维度，优先级低于类样式（避免inline覆盖） */
-    transition: opacity 0.3s ease, transform 0.3s ease !important
-    width: 3rem
-    height: 3rem
-    bottom: 1.5rem
-    right: 1rem
-    @media (max-width: 1023px) and (orientation: landscape)
-        width: 2.5rem
-        height: 2.5rem
-        bottom: 1rem
-        right: 1rem
-    @media (min-width: 1024px)
-        width: 3.75rem
-        height: 3.75rem
-        bottom: 2rem
-        right: 2rem
-    &.show
-        opacity: 1
-        transform: scale(1)
-        &.idle
-            opacity: 0.5
-            transition: opacity 0.3s ease
-            &:hover
-                opacity: 1
-        &:hover
-            .icon-arrow
-                opacity: 0
-                transform: scale(0.5)
-            .percent-text
-                opacity: 1
-                transform: scale(1)
-    &.hide
-        pointer-events: none
-    &:active
-        transform: scale(0.95)
-        opacity: 1
-.btn-card
-    position: relative
-    width: 100%
-    height: 100%
-    border-radius: 50%
-    background: var(--card-bg)
-    backdrop-filter: blur(12px)
-    -webkit-backdrop-filter: blur(12px)
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)
-    border: 1px solid rgba(128, 128, 128, 0.1)
-    cursor: pointer
-    overflow: hidden
     color: var(--primary)
-    &::before
-        content: ''
+    font-size: 2.25rem
+    font-weight: bold
+    border: none
+    position: fixed
+    bottom: 2rem
+    right: 2rem
+    opacity: 1
+    cursor: pointer
+    transform: translateX(0)
+    pointer-events: auto
+    z-index: 100
+    background: transparent
+    
+    button
+        position: relative
+        border-radius: 1rem
+        
+    .progress-ring
         position: absolute
-        inset: 0
-        background: var(--card-bg)
-        opacity: 0.9
-        z-index: -1
-.progress-ring
-    position: absolute
-    inset: 0
-    width: 100%
-    height: 100%
-    transform: rotate(-90deg)
-    pointer-events: none
-    .progress-bar
-        stroke: var(--primary)
-        transition: stroke-dashoffset 0.4s ease-out
-        will-change: stroke-dashoffset
-        opacity: 0.9
-.btn-center
-    position: absolute
-    inset: 0
-    display: grid
-    place-items: center
-    > *
-        grid-area: 1 / 1
-    .icon-arrow
-        width: 1.5rem
-        height: 1.5rem
-        transition: all 0.2s ease
+        top: 50%
+        left: 50%
+        transform: translate(-50%, -50%)
+        width: 60px
+        height: 60px
+        pointer-events: none
+        z-index: 0
+        
+    .progress-ring-bg
+        stroke: var(--page-bg)
+        
+    .progress-ring-path
+        transition: stroke-dashoffset 0.3s ease-out, opacity 0.3s ease-out
+        
+    .icon-wrapper
+        transition: transform 0.3s ease-out
+        position: absolute
+        top: 50%
+        left: 50%
+        transform: translate(-50%, -50%)
+        
+    .icon-wrapper.show-progress
+        transform: translate(-50%, calc(-50% - 0.5rem))
+        
+    .progress-label
         color: var(--primary)
-        opacity: 1
-        transform: scale(1)
-        @media (min-width: 1024px)
-            width: 1.75rem
-            height: 1.75rem
-    .percent-text
-        font-size: 0.75rem
-        font-weight: 600
-        line-height: 1
+        transition: opacity 0.3s ease-out, transform 0.3s ease-out
+        position: absolute
+        top: 50%
+        left: 50%
+        transform: translate(-50%, calc(-50% + 0.5rem))
         opacity: 0
-        transform: scale(0.5)
-        transition: all 0.2s ease
-        color: var(--primary)
-        @media (min-width: 1024px)
-            font-size: 0.875rem
-        &::after
-            content: '%'
-.back-to-top-btn.scrolling
-    opacity: 1 !important
-    .icon-arrow
-        opacity: 0
-        transform: scale(0.5)
-    .percent-text
+        
+    .progress-label.show
         opacity: 1
-        transform: scale(1)
+        transform: translate(-50%, calc(-50% + 0.5rem))
+        
+    .progress-label.hide-up
+        opacity: 0
+        transform: translate(-50%, calc(-50% - 0.5rem))
+        
+    i
+        font-size: 1.75rem
+        
+    &.hide
+        transform: translateX(0) scale(0.9)
+        opacity: 0
+        pointer-events: none
+        
+    &:active
+        transform: translateX(0) scale(0.9)
+
 </style>
-<script>
+
+<script is:raw is:inline>
+function backToTop() {
+    window.scroll({ top: 0, behavior: 'smooth' });
+}
+
 (function() {
-    'use strict';
-    const btn = document.getElementById('back-to-top-btn') as HTMLElement;
-    if (!btn) return;
-    const progressBar = btn.querySelector('.progress-bar') as SVGElement;
-    const percentText = btn.querySelector('.percent-text') as HTMLElement;
-
-    // 常量配置：优化定时器时间，更贴近实际滚动时长
-    const CIRCUMFERENCE = 125.66;
-    const SCROLL_THRESHOLD = 200;
-    const IDLE_TIMEOUT = 500;
-    const THROTTLE_SCROLL = 16; // 60fps，保持流畅
-    const DEBOUNCE_RESIZE = 100;
-    const DEBOUNCE_MUTATION = 150;
-    const RESET_TIMEOUT = 500; // 缩短至500ms（原1000ms），减少状态延迟
-
-    // 状态管理：新增「是否正在重置状态」标记，避免重复触发
-    let scrollPercent = 0;
-    let isVisible = false;
-    let scrollTimer: NodeJS.Timeout | null = null;
-    let isHovering = false;
-    let docHeight = 0;
-    let viewHeight = 0;
-    let lastScrollTop = 0;
-    let isScrolling = false;
-    let resizeObserver: ResizeObserver | null = null;
-    let isScrollingToTop = false;
-    let mutationObserver: MutationObserver | null = null;
-    let isResetting = false; // 新增：避免resetButtonState重复执行
-
-    // 节流函数：保持不变，确保性能
-    function throttle<T extends (...args: any[]) => void>(
-        func: T,
-        limit: number
-    ): (...args: Parameters<T>) => void {
-        let inThrottle = false;
-        let lastRan = 0;
-        return function (this: any, ...args: Parameters<T>) {
-            const now = Date.now();
-            if (!inThrottle || now - lastRan >= limit) {
-                func.apply(this, args);
-                lastRan = now;
-                inThrottle = true;
-                setTimeout(() => {
-                    inThrottle = false;
-                }, limit);
-            }
-        };
+    let scrollTimeout = null;
+    let lastScrollTime = 0;
+    const HIDE_DELAY = 3000; // 3秒
+    const SCROLL_THRESHOLD_PX = 500; // 固定px阈值，超过此值显示按钮
+    
+    const progressPath = document.getElementById('progress-ring-path');
+    const progressText = document.getElementById('back-to-top-progress-text');
+    const progressLabel = document.getElementById('back-to-top-progress-label');
+    const iconWrapper = document.getElementById('back-to-top-icon');
+    const backToTopBtn = document.getElementById('back-to-top-btn');
+    
+    if (!progressPath || !progressText || !progressLabel || !iconWrapper || !backToTopBtn) {
+        return;
     }
-
-    // 缓动函数：保持不变
-    function smoothUpdateNumber(currentValue: number, targetValue: number, callback: (value: number) => void) {
-        if (currentValue === targetValue) return;
-        let start: number | null = null;
-        const duration = 200;
-        const difference = targetValue - currentValue;
+    
+    // 圆角矩形周长计算：rect(57x57, rx=16)
+    // 周长 = 4条直线边 + 4个圆角弧线
+    // 直线边：(57 - 2*16) = 25，共4条 = 100
+    // 圆角弧线：每个是1/4圆，4个共 2π*16 ≈ 100.53
+    // 总计 ≈ 200.53，但考虑到stroke渲染，使用更精确的值
+    const perimeter = 200.53;
+    let currentProgress = 0;
+    let isProgressVisible = false;
+    let lastScrollTop = 0; // 记录上一次滚动位置
+    
+    function updateProgress() {
+        // 获取当前滚动位置和页面信息（用于整个页面滚动百分比计算）
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         
-        function animate(timestamp: number) {
-            if (!start) start = timestamp;
-            const progress = Math.min((timestamp - start) / duration, 1);
-            const currentNum = Math.round(currentValue + (difference * progress));
-            callback(currentNum);
+        // 查找文章容器
+        const postContainer = document.getElementById('post-container');
+        
+        let progress = 0;
+        
+        if (postContainer) {
+            // 获取文章容器的位置信息
+            const containerRect = postContainer.getBoundingClientRect();
+            const containerTop = containerRect.top + window.pageYOffset;
+            const containerBottom = containerTop + containerRect.height;
+            const containerHeight = containerRect.height;
             
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            }
-        }
-        
-        requestAnimationFrame(animate);
-    }
-
-    // 核心优化1：增强updateButton鲁棒性，主动修复异常状态
-    function updateButton() {
-        const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-        // 紧急修复：若isScrollingToTop为true但已停止滚动（currentScrollTop>0），强制重置状态
-        if (isScrollingToTop && currentScrollTop > 0 && !isResetting) {
-            resetButtonState();
-            return;
-        }
-        if (isScrollingToTop) return;
-
-        const shouldShow = currentScrollTop > SCROLL_THRESHOLD;
-        
-        // 状态变化时强制同步类和样式，确保过渡动画触发
-        if (shouldShow !== isVisible) {
-            isVisible = shouldShow;
-            // 先清除可能残留的inline style，再切换类
-            btn.style.opacity = '';
-            btn.style.transform = '';
-            btn.classList.toggle('show', shouldShow);
-            btn.classList.toggle('hide', !shouldShow);
-            if (shouldShow) {
-                btn.classList.add('idle');
-                // 主动触发一次重绘，避免浏览器样式缓存导致动画丢失
-                void btn.offsetWidth; // 强制重排，刷新样式
-            }
-        }
-        
-        if (shouldShow && docHeight > 0) {
-            const newScrollPercent = Math.min(100, Math.round((currentScrollTop / docHeight) * 100));
+            // 获取当前视口信息
+            const viewportHeight = window.innerHeight;
             
-            if (Math.abs(newScrollPercent - scrollPercent) >= 1) {
-                scrollPercent = newScrollPercent;
-                if (progressBar) {
-                    const offset = CIRCUMFERENCE - (scrollPercent / 100) * CIRCUMFERENCE;
-                    progressBar.style.strokeDashoffset = offset.toString();
-                }
-                if (percentText) {
-                    percentText.textContent = scrollPercent.toString();
+            // 计算文章的可滚动距离
+            // 当视口顶部到达文章顶部时，进度为0
+            // 当视口底部到达文章底部时（即文章内容全部读完），进度为100
+            const scrollableDistance = Math.max(0, containerBottom - containerTop - viewportHeight);
+            
+            if (scrollableDistance > 0) {
+                // 计算已滚动的距离（从文章开始位置计算）
+                // 已滚动距离 = 当前滚动位置 - 文章顶部位置
+                const scrolledDistance = scrollTop - containerTop;
+                
+                // 计算进度百分比
+                progress = Math.round((scrolledDistance / scrollableDistance) * 100);
+                
+                // 限制在0-100之间（小于0显示0，大于100显示100）
+                progress = Math.max(0, Math.min(100, progress));
+            } else {
+                // 如果文章高度小于等于视口高度，不需要滚动
+                // 如果已经滚动到文章位置，进度为100，否则为0
+                if (scrollTop >= containerTop) {
+                    progress = 100;
+                } else {
+                    progress = 0;
                 }
             }
+        } else {
+            // 如果没有找到文章容器，回退到原来的逻辑（整个页面进度）
+            progress = scrollHeight > 0 ? Math.min(100, Math.round((scrollTop / scrollHeight) * 100)) : 0;
+        }
+        
+        // 更新进度
+        const offset = perimeter - (progress / 100) * perimeter;
+        progressPath.style.strokeDashoffset = offset.toString();
+        
+        // 更新文本
+        progressText.textContent = progress + '%';
+        
+        // 检测是否在滚动（滚动位置发生变化）
+        const isScrolling = scrollTop !== lastScrollTop;
+        
+        // 判断是否应该显示按钮（基于固定px值）
+        const shouldShowButton = scrollTop >= SCROLL_THRESHOLD_PX;
+        
+        // 更新上一次滚动位置
+        lastScrollTop = scrollTop;
+        
+        if (shouldShowButton) {
+            // 显示按钮（常驻）
+            backToTopBtn.classList.remove('hide');
             
-            const scrollDiff = Math.abs(currentScrollTop - lastScrollTop);
-            if (scrollDiff > 2 && !isHovering) {
-                if (!isScrolling) {
-                    isScrolling = true;
-                    btn.classList.add('scrolling');
-                    btn.classList.remove('idle');
+            // 如果正在滚动，显示进度标签（从下往上浮入）
+            if (isScrolling) {
+                // 清除之前的隐藏定时器
+                clearTimeout(scrollTimeout);
+                
+                // 显示进度条和标签
+                if (!isProgressVisible) {
+                    isProgressVisible = true;
+                    progressPath.style.opacity = '1';
+                    progressLabel.classList.remove('hide-up');
+                    progressLabel.classList.add('show');
+                    iconWrapper.classList.add('show-progress');
                 }
                 
-                if (scrollTimer) {
-                    clearTimeout(scrollTimer);
-                }
+                currentProgress = progress;
                 
-                scrollTimer = setTimeout(() => {
-                    if (!isHovering) {
-                        isScrolling = false;
-                        btn.classList.remove('scrolling');
-                        btn.classList.add('idle');
-                    }
-                }, IDLE_TIMEOUT);
+                // 重置隐藏定时器：3秒后隐藏进度标签
+                scrollTimeout = setTimeout(() => {
+                    hideProgressLabel();
+                }, HIDE_DELAY);
             }
-            
-            lastScrollTop = currentScrollTop;
+            // 如果不在滚动，不改变进度标签的状态（保持当前状态）
+        } else {
+            // 隐藏整个按钮
+            backToTopBtn.classList.add('hide');
+            if (isProgressVisible) {
+                isProgressVisible = false;
+                progressPath.style.opacity = '0';
+                progressLabel.classList.remove('show', 'hide-up');
+                iconWrapper.classList.remove('show-progress');
+            }
+            // 清除隐藏定时器
+            clearTimeout(scrollTimeout);
         }
     }
-
-    // 核心优化2：重写resetButtonState，彻底清除样式+状态
-    function resetButtonState() {
-        if (isResetting) return;
-        isResetting = true;
-
-        // 1. 强制清除所有相关inline style，避免覆盖类样式
-        btn.style.opacity = '';
-        btn.style.transform = '';
-        btn.style.transition = '';
-        // 额外清除可能残留的其他样式（如filter）
-        btn.removeAttribute('style');
-
-        // 2. 同步所有状态，确保与updateButton逻辑完全对齐
-        btn.classList.remove('show', 'scrolling', 'idle');
-        btn.classList.add('hide');
-        isScrollingToTop = false;
-        isVisible = false;
-        scrollPercent = 0;
-        isScrolling = false;
-        isHovering = false;
-
-        // 3. 重置进度条和百分比，避免下次显示错位
-        if (progressBar) {
-            progressBar.style.strokeDashoffset = CIRCUMFERENCE.toString();
+    
+    function hideProgressLabel() {
+        // 隐藏进度标签（从上往下浮出）
+        if (isProgressVisible) {
+            isProgressVisible = false;
+            progressLabel.classList.remove('show');
+            progressLabel.classList.add('hide-up');
+            // 图标恢复到中间位置
+            iconWrapper.classList.remove('show-progress');
+            // 进度条保持显示（不隐藏）
+            // progressPath.style.opacity = '0'; // 不隐藏进度条
         }
-        if (percentText) {
-            percentText.textContent = '0';
+    }
+    
+    // 监听滚动事件
+    let ticking = false;
+    function onScroll() {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                updateProgress();
+                ticking = false;
+            });
+            ticking = true;
         }
-
-        // 4. 主动触发updateButton，确保状态立即同步
-        setTimeout(() => {
-            updateButton();
-            isResetting = false;
-        }, 0); // 微任务延迟，确保DOM更新完成
+        lastScrollTime = Date.now();
     }
-
-    // 核心优化3：重写scrollToTop，增强状态管控
-    function scrollToTop() {
-        // 防止重复点击导致状态混乱
-        if (isScrollingToTop || isResetting) return;
-        isScrollingToTop = true;
-
-        // 1. 清除之前可能残留的定时器
-        if (scrollTimer) {
-            clearTimeout(scrollTimer);
-        }
-
-        // 2. 触发渐隐（仅设置必要样式，避免多余属性）
-        btn.classList.remove('scrolling', 'idle');
-        btn.style.opacity = '0';
-        // 复用CSS定义的过渡，不重复设置transition
-
-        // 3. 执行平滑滚动（增加回调，确保滚动结束后立即重置）
-        const scrollOptions = {
-            top: 0,
-            behavior: 'smooth' as ScrollBehavior
-        };
-        window.scrollTo(scrollOptions);
-
-        // 4. 三重保障重置状态（覆盖所有边缘场景）
-        // a. 监听scrollend（精准）
-        const handleScrollEnd = () => {
-            window.removeEventListener('scrollend', handleScrollEnd);
-            resetButtonState();
-        };
-        window.addEventListener('scrollend', handleScrollEnd, { once: true });
-
-        // b. 缩短定时器兜底（500ms，覆盖scrollend未触发场景）
-        const resetTimer = setTimeout(() => {
-            window.removeEventListener('scrollend', handleScrollEnd); // 避免重复触发
-            resetButtonState();
-        }, RESET_TIMEOUT);
-
-        // c. 监听滚动中断（用户手动滚动时立即重置）
-        const handleScrollInterrupt = throttle(() => {
-            const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            if (currentScrollTop > 0) {
-                clearTimeout(resetTimer);
-                window.removeEventListener('scrollend', handleScrollEnd);
-                window.removeEventListener('scroll', handleScrollInterrupt);
-                resetButtonState();
-            }
-        }, THROTTLE_SCROLL);
-        window.addEventListener('scroll', handleScrollInterrupt, { passive: true, once: true });
-    }
-
-    // 核心优化4：增强init逻辑，确保初始状态正确
-    function init() {
-        // 1. 优先更新文档高度，避免计算错误
-        updateDocHeight();
-        
-        // 2. 主动触发两次updateButton，确保初始状态同步（避免浏览器渲染延迟）
-        updateButton();
-        setTimeout(updateButton, 0);
-
-        // 3. 滚动监听：增加{ capture: true }，确保优先触发
-        const throttledScroll = throttle(updateButton, THROTTLE_SCROLL);
-        window.addEventListener('scroll', throttledScroll, { passive: true, capture: true });
-
-        // 4. Resize监听：保持防抖，确保性能
-        const handleResize = debounce(() => {
-            updateDocHeight();
-            updateButton();
-        }, DEBOUNCE_RESIZE);
-        window.addEventListener('resize', handleResize);
-
-        // 5. 点击事件：防止默认行为，确保触发优先级
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation(); // 防止事件冒泡导致的干扰
-            scrollToTop();
-        });
-
-        // 6. 悬停事件：增加状态校验，避免干扰重置
-        btn.addEventListener('mouseenter', () => {
-            if (isScrollingToTop || isResetting) return;
-            isHovering = true;
-            btn.classList.remove('idle');
-            if (scrollTimer) clearTimeout(scrollTimer);
-        });
-        
-        btn.addEventListener('mouseleave', () => {
-            if (isScrollingToTop || isResetting) return;
-            isHovering = false;
-            btn.classList.remove('scrolling');
-            isScrolling = false;
-            if (!isScrolling && isVisible) {
-                btn.classList.add('idle');
-            }
-        });
-
-        // 7. 触摸事件：优化timer清理，避免内存泄漏
-        let touchTimer: ReturnType<typeof setTimeout> | null = null;
-        const touchStartHandler = () => {
-            if (isScrollingToTop || isResetting) return;
-            isHovering = true;
-            btn.classList.remove('idle');
-            if (scrollTimer) clearTimeout(scrollTimer);
-            if (touchTimer) clearTimeout(touchTimer);
-            touchTimer = setTimeout(() => {
-                isHovering = false;
-                btn.classList.remove('scrolling');
-                btn.classList.add('idle');
-                isScrolling = false;
-            }, 2000);
-        };
-        btn.addEventListener('touchstart', touchStartHandler, { passive: true });
-
-        // 8. MutationObserver：保持不变，确保DOM变化时更新
-        mutationObserver = new MutationObserver((mutations) => {
-            let shouldUpdate = false;
-            for (const mutation of mutations) {
-                if (mutation.type === 'childList' || 
-                    (mutation.type === 'attributes' && 
-                     mutation.target instanceof HTMLElement &&
-                     (mutation.target instanceof HTMLImageElement || 
-                      getComputedStyle(mutation.target).display !== 'none'))) {
-                    shouldUpdate = true;
-                    break;
-                }
-            }
-            
-            if (shouldUpdate) {
-                updateDocHeight();
-                updateButton();
-            }
-        });
-        mutationObserver.observe(document.body, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['style', 'class', 'hidden', 'src', 'href']
-        });
-
-        // 9. ResizeObserver：保持不变，确保窗口变化时更新
-        resizeObserver = new ResizeObserver(handleResize);
-        resizeObserver.observe(document.body);
-    }
-
-    // 更新文档高度：保持不变
-    function updateDocHeight() {
-        viewHeight = document.documentElement.clientHeight;
-        docHeight = document.documentElement.scrollHeight - viewHeight;
-        // 处理特殊情况：文档高度为0时强制设为1（避免除以0错误）
-        if (docHeight <= 0) docHeight = 1;
-    }
-
-    // 防抖函数：保持不变
-    const debounce = (func: (...args: any[]) => void, wait: number) => {
-        let timeout: NodeJS.Timeout;
-        return (...args: any[]) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    };
-
-    // 延迟初始化：确保DOM完全加载后执行
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        init();
-    } else {
-        document.addEventListener('DOMContentLoaded', init, { once: true });
-    }
-
-    // 清理函数：增强鲁棒性，避免内存泄漏
-    return () => {
-        const throttledScroll = throttle(updateButton, THROTTLE_SCROLL);
-        window.removeEventListener('scroll', throttledScroll);
-
-        const handleResize = debounce(() => {
-            updateDocHeight();
-            updateButton();
-        }, DEBOUNCE_RESIZE);
-        window.removeEventListener('resize', handleResize);
-
-        btn.removeEventListener('click', scrollToTop);
-        btn.removeEventListener('mouseenter', () => { isHovering = true; });
-        btn.removeEventListener('mouseleave', () => { isHovering = false; });
-
-        const touchStartHandler = () => {};
-        btn.removeEventListener('touchstart', touchStartHandler);
-
-        if (mutationObserver) mutationObserver.disconnect();
-        if (resizeObserver) resizeObserver.disconnect();
-        if (scrollTimer) clearTimeout(scrollTimer);
-    };
+    
+    window.addEventListener('scroll', onScroll, { passive: true });
+    
+    // 初始化时设置初始滚动位置
+    lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // 初始化时检查进度，确保按钮状态正确
+    updateProgress();
 })();
 </script>
