@@ -138,14 +138,13 @@ import { Icon } from "astro-icon/components";
         font-size: 2.25rem
         
         @media (max-width: 1023px)
-            font-size: 1.25rem
-            transform: translate(-50%, calc(-50% - 0.35rem))
+            font-size: 2rem
         
     .icon-wrapper.show-progress
         transform: translate(-50%, calc(-50% - 0.5rem))
         
         @media (max-width: 1023px)
-            transform: translate(-50%, calc(-50% - 0.35rem))
+            transform: translate(-50%, calc(-50% - 0.5rem))
         
     .progress-label
         color: var(--primary)
@@ -280,16 +279,17 @@ function backToTop() {
                         progressLabel.classList.add('show');
                         iconWrapper.classList.add('show-progress');
                     } else {
-                        // 手机端：只显示百分比
+                        // 手机端：显示百分比和图标移动
                         progressLabelMobile.classList.remove('hide-up');
                         progressLabelMobile.classList.add('show');
+                        iconWrapper.classList.add('show-progress');
                     }
                 }
                 
                 currentProgress = progress;
                 
-                // 移动端：更长的隐藏延迟，增加用户可见时间
-                const hideDelay = isMobile() ? 4000 : HIDE_DELAY;
+                // 统一隐藏延迟
+                const hideDelay = 3000;
                 scrollTimeout = setTimeout(() => {
                     hideProgressLabel();
                 }, hideDelay);
