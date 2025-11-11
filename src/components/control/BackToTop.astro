@@ -1,14 +1,14 @@
 ---
 import { Icon } from "astro-icon/components";
 ---
-<!-- HTML结构：响应式显示，手机端默认展示 -->
-<div class="back-to-top-wrapper lg:block">
+
+<div class="back-to-top-wrapper">
     <div id="back-to-top-btn" class="back-to-top-btn hide flex items-center justify-center rounded-2xl overflow-visible transition" onclick="backToTop()">
-        <!-- 按钮主体：手机端缩小尺寸 -->
-        <button aria-label="Back to Top" class="btn-card h-[3.75rem] w-[3.75rem] md:h-[2.75rem] md:w-[2.75rem] rounded-2xl relative flex flex-col items-center justify-center">
-            <!-- 圆角矩形进度条SVG：适配手机端尺寸与周长 -->
-            <svg class="progress-ring w-[60px] h-[60px] md:w-[40px] md:h-[40px]" viewBox="0 0 60 60">
-                <!-- 背景矩形（遮罩层） -->
+        <!-- 按钮主体 -->
+        <button aria-label="Back to Top" class="btn-card h-[3.75rem] w-[3.75rem] rounded-2xl relative flex flex-col items-center justify-center">
+            <!-- 圆角矩形进度条 SVG -->
+            <svg class="progress-ring" width="60" height="60" viewBox="0 0 60 60">
+                <!-- 背景矩形（遮罩层，显示未涉及的部分） -->
                 <rect
                     class="progress-ring-bg"
                     x="1.5"
@@ -21,7 +21,7 @@ import { Icon } from "astro-icon/components";
                     stroke-linecap="round"
                     stroke-linejoin="round"
                 />
-                <!-- 进度矩形：手机端重新计算stroke-dasharray -->
+                <!-- 进度矩形 -->
                 <rect
                     id="progress-ring-path"
                     class="progress-ring-path"
@@ -41,54 +41,72 @@ import { Icon } from "astro-icon/components";
                 />
             </svg>
             
-            <!-- 上升图标：手机端缩小 -->
+            <!-- 上升图标 -->
             <div id="back-to-top-icon" class="icon-wrapper relative z-10 transition-all duration-300 flex items-center justify-center">
-                <Icon name="material-symbols:keyboard-arrow-up-rounded" class="md:text-[1.5rem]" />
+                <Icon name="material-symbols:keyboard-arrow-up-rounded"></Icon>
             </div>
-            <!-- 进度百分比标签：手机端缩小字体 -->
-            <div id="back-to-top-progress-label" class="progress-label relative z-10 opacity-0 transition-all duration-300 text-xs md:text-[0.65rem] font-medium flex items-center justify-center">
+            <!-- 进度百分比标签 -->
+            <div id="back-to-top-progress-label" class="progress-label relative z-10 opacity-0 transition-all duration-300 text-xs font-medium flex items-center justify-center hidden md:flex">
                 <span id="back-to-top-progress-text">0%</span>
+            </div>
+            <!-- 手机端百分比标签 -->
+            <div id="back-to-top-progress-label-mobile" class="progress-label-mobile relative z-10 opacity-0 transition-all duration-300 text-[10px] font-bold flex items-center justify-center">
+                <span id="back-to-top-progress-text-mobile">0%</span>
             </div>
         </button>
     </div>
 </div>
 
-<!-- Stylus样式：修复缩进，统一响应式规则 -->
 <style lang="stylus">
-/* 同级选择器：.back-to-top-wrapper 与 .back-to-top-btn 保持4空格缩进 */
 .back-to-top-wrapper
     width: 3.75rem
     height: 3.75rem
-    md:width 2.75rem  /* Stylus推荐省略冒号，避免与响应式前缀冲突 */
-    md:height 2.75rem
     position: absolute
     right: 0
     top: 0
     pointer-events: none
+    
+    // 手机端调整
+    @media (max-width: 1023px)
+        width: 3.5rem
+        height: 3.5rem
+        right: 1rem
+        bottom: 1rem
+        top: auto
 
-/* 与 .back-to-top-wrapper 同级，缩进一致（4空格） */
 .back-to-top-btn
     color: var(--primary)
     font-size: 2.25rem
-    md:font-size 1.75rem
     font-weight: bold
     border: none
     position: fixed
     bottom: 2rem
     right: 2rem
-    md:bottom 1rem  /* 手机端缩小底部/右侧间距 */
-    md:right 1rem
     opacity: 1
     cursor: pointer
-    transform: translateX(0)
+    transform: translateY(0)
     pointer-events: auto
     z-index: 100
     background: transparent
+    width: fit-content
+    height: fit-content
+    padding: 0
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out
     
-    /* 子选择器：比父级多1层缩进（8空格） */
+    // 手机端位置调整
+    @media (max-width: 1023px)
+        bottom: 1rem
+        right: 1rem
+    
     button
         position: relative
         border-radius: 1rem
+        width: 3.75rem
+        height: 3.75rem
+        
+        @media (max-width: 1023px)
+            width: 3.5rem
+            height: 3.5rem
         
     .progress-ring
         position: absolute
@@ -97,10 +115,13 @@ import { Icon } from "astro-icon/components";
         transform: translate(-50%, -50%)
         width: 60px
         height: 60px
-        md:width 40px
-        md:height 40px
         pointer-events: none
         z-index: 0
+        
+        // 手机端缩小进度条
+        @media (max-width: 1023px)
+            width: 48px
+            height: 48px
         
     .progress-ring-bg
         stroke: var(--page-bg)
@@ -114,10 +135,17 @@ import { Icon } from "astro-icon/components";
         top: 50%
         left: 50%
         transform: translate(-50%, -50%)
+        font-size: 2.25rem
+        
+        @media (max-width: 1023px)
+            font-size: 1.25rem
+            transform: translate(-50%, calc(-50% - 0.35rem))
         
     .icon-wrapper.show-progress
         transform: translate(-50%, calc(-50% - 0.5rem))
-        md:transform translate(-50%, calc(-50% - 0.35rem))  /* 手机端调整图标偏移 */
+        
+        @media (max-width: 1023px)
+            transform: translate(-50%, calc(-50% - 0.35rem))
         
     .progress-label
         color: var(--primary)
@@ -126,164 +154,173 @@ import { Icon } from "astro-icon/components";
         top: 50%
         left: 50%
         transform: translate(-50%, calc(-50% + 0.5rem))
-        md:transform translate(-50%, calc(-50% + 0.35rem))  /* 手机端调整标签偏移 */
         opacity: 0
         
     .progress-label.show
         opacity: 1
         transform: translate(-50%, calc(-50% + 0.5rem))
-        md:transform translate(-50%, calc(-50% + 0.35rem))
         
     .progress-label.hide-up
         opacity: 0
-        transform: translate(-50%, calc(-50% - 0.5rem))
-        md:transform translate(-50%, calc(-50% - 0.35rem))
+        transform: translate(-50%, calc(-50% + 0.5rem))
+    
+    // 手机端百分比标签：放在箭头下方，优化位置
+    .progress-label-mobile
+        color: var(--primary)
+        transition: opacity 0.3s ease-out
+        position: absolute
+        top: 50%
+        left: 50%
+        transform: translate(-50%, calc(-50% + 0.65rem))
+        opacity: 0
         
-    i
-        font-size: 1.75rem
-        md:font-size 1.25rem  /* 手机端缩小图标字体 */
+        // 桌面端隐藏
+        @media (min-width: 1024px)
+            display: none
+        
+    .progress-label-mobile.show
+        opacity: 1
+        
+    .progress-label-mobile.hide-up
+        opacity: 0
         
     &.hide
-        transform: translateX(0) scale(0.9)
+        transform: translateY(2rem)
         opacity: 0
         pointer-events: none
         
-    &:active
-        transform: translateX(0) scale(0.9)
+    &:active:not(.hide)
+        filter: brightness(0.95)
+
 </style>
 
-<!-- 滚动逻辑：适配手机端触发阈值与进度计算 -->
 <script is:raw is:inline>
-// 点击返回顶部（平滑滚动）
 function backToTop() {
     window.scroll({ top: 0, behavior: 'smooth' });
 }
 
-// 滚动监听与进度更新
 (function() {
     let scrollTimeout = null;
     let lastScrollTime = 0;
-    const HIDE_DELAY = 3000;  // 进度标签3秒后隐藏（与PC端一致）
-    // 手机端降低滚动触发阈值（300px），PC端保持500px
-    const SCROLL_THRESHOLD_PX = window.innerWidth < 768 ? 300 : 500;
+    const HIDE_DELAY = 3000; // 3秒
+    const SCROLL_THRESHOLD_PX = 500; // 固定px阈值，超过此值显示按钮
     
-    // DOM元素获取（容错处理）
+    // 判断是否为移动设备
+    const isMobile = () => window.innerWidth < 1024;
+    
     const progressPath = document.getElementById('progress-ring-path');
     const progressText = document.getElementById('back-to-top-progress-text');
     const progressLabel = document.getElementById('back-to-top-progress-label');
     const iconWrapper = document.getElementById('back-to-top-icon');
+    const progressLabelMobile = document.getElementById('back-to-top-progress-label-mobile');
+    const progressTextMobile = document.getElementById('back-to-top-progress-text-mobile');
     const backToTopBtn = document.getElementById('back-to-top-btn');
     
-    if (!progressPath || !progressText || !progressLabel || !iconWrapper || !backToTopBtn) {
+    if (!progressPath || !progressText || !progressLabel || !iconWrapper || !backToTopBtn || !progressLabelMobile || !progressTextMobile) {
         return;
     }
     
-    // 计算进度条周长：手机端（37x37，rx=10）≈134.64，PC端（57x57，rx=16）≈200.53
-    const isMobile = window.innerWidth < 768;
-    const perimeter = isMobile ? 134.64 : 200.53;
-    
+    const perimeter = 200.53;
     let currentProgress = 0;
     let isProgressVisible = false;
-    let lastScrollTop = 0;  // 记录上一次滚动位置，判断是否在滚动
+    let lastScrollTop = 0;
     
-    // 更新进度条与按钮状态
     function updateProgress() {
-        // 获取当前滚动位置与页面高度
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        
-        // 优先读取文章容器（post-container）的进度，无则用全局页面进度
         const postContainer = document.getElementById('post-container');
+        
         let progress = 0;
         
         if (postContainer) {
             const containerRect = postContainer.getBoundingClientRect();
             const containerTop = containerRect.top + window.pageYOffset;
             const containerBottom = containerTop + containerRect.height;
+            const containerHeight = containerRect.height;
             const viewportHeight = window.innerHeight;
-            // 文章可滚动距离（避免文章高度小于视口时计算错误）
             const scrollableDistance = Math.max(0, containerBottom - containerTop - viewportHeight);
             
             if (scrollableDistance > 0) {
-                // 已滚动距离 = 当前滚动位置 - 文章顶部位置
                 const scrolledDistance = scrollTop - containerTop;
                 progress = Math.round((scrolledDistance / scrollableDistance) * 100);
-                progress = Math.max(0, Math.min(100, progress));  // 限制在0-100
+                progress = Math.max(0, Math.min(100, progress));
             } else {
-                // 文章高度 ≤ 视口高度：滚动到文章位置则进度100，否则0
-                progress = scrollTop >= containerTop ? 100 : 0;
+                if (scrollTop >= containerTop) {
+                    progress = 100;
+                } else {
+                    progress = 0;
+                }
             }
         } else {
-            // 无文章容器：用全局页面滚动进度
             progress = scrollHeight > 0 ? Math.min(100, Math.round((scrollTop / scrollHeight) * 100)) : 0;
         }
         
-        // 更新进度条（stroke-dashoffset = 周长 - 进度占比*周长）
         const offset = perimeter - (progress / 100) * perimeter;
         progressPath.style.strokeDashoffset = offset.toString();
-        // 更新进度文本
         progressText.textContent = progress + '%';
+        progressTextMobile.textContent = progress + '%';
         
-        // 判断是否在滚动（滚动位置变化则视为滚动中）
         const isScrolling = scrollTop !== lastScrollTop;
-        // 判断是否显示按钮（超过阈值则显示）
         const shouldShowButton = scrollTop >= SCROLL_THRESHOLD_PX;
-        
-        // 更新上一次滚动位置
         lastScrollTop = scrollTop;
         
         if (shouldShowButton) {
-            // 显示按钮（移除hide类）
             backToTopBtn.classList.remove('hide');
             
             if (isScrolling) {
-                // 滚动中：显示进度条与标签，重置隐藏定时器
                 clearTimeout(scrollTimeout);
                 
                 if (!isProgressVisible) {
                     isProgressVisible = true;
                     progressPath.style.opacity = '1';
-                    progressLabel.classList.remove('hide-up');
-                    progressLabel.classList.add('show');
-                    iconWrapper.classList.add('show-progress');
+                    
+                    // 桌面端：显示百分比标签和图标移动
+                    if (!isMobile()) {
+                        progressLabel.classList.remove('hide-up');
+                        progressLabel.classList.add('show');
+                        iconWrapper.classList.add('show-progress');
+                    } else {
+                        // 手机端：只显示百分比
+                        progressLabelMobile.classList.remove('hide-up');
+                        progressLabelMobile.classList.add('show');
+                    }
                 }
                 
                 currentProgress = progress;
-                // 3秒后隐藏进度标签
+                
+                // 移动端：更长的隐藏延迟，增加用户可见时间
+                const hideDelay = isMobile() ? 4000 : HIDE_DELAY;
                 scrollTimeout = setTimeout(() => {
                     hideProgressLabel();
-                }, HIDE_DELAY);
+                }, hideDelay);
             }
-            // 非滚动中：保持当前标签状态（不主动隐藏）
         } else {
-            // 未超过阈值：隐藏按钮，重置进度状态
             backToTopBtn.classList.add('hide');
             if (isProgressVisible) {
                 isProgressVisible = false;
                 progressPath.style.opacity = '0';
                 progressLabel.classList.remove('show', 'hide-up');
+                progressLabelMobile.classList.remove('show', 'hide-up');
                 iconWrapper.classList.remove('show-progress');
             }
             clearTimeout(scrollTimeout);
         }
     }
     
-    // 隐藏进度标签（带动画）
     function hideProgressLabel() {
         if (isProgressVisible) {
             isProgressVisible = false;
             progressLabel.classList.remove('show');
             progressLabel.classList.add('hide-up');
+            progressLabelMobile.classList.remove('show');
+            progressLabelMobile.classList.add('hide-up');
             iconWrapper.classList.remove('show-progress');
-            // 进度条保持显示（与PC端交互一致）
         }
     }
     
-    // 滚动事件防抖（避免频繁触发更新，提升性能）
     let ticking = false;
     function onScroll() {
         if (!ticking) {
-            // 使用requestAnimationFrame确保动画流畅
             window.requestAnimationFrame(() => {
                 updateProgress();
                 ticking = false;
@@ -293,9 +330,8 @@ function backToTop() {
         lastScrollTime = Date.now();
     }
     
-    // 监听滚动事件（passive: true 提升滚动性能）
     window.addEventListener('scroll', onScroll, { passive: true });
-    // 初始化：记录初始滚动位置，确保按钮状态正确
+    
     lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
     updateProgress();
 })();
