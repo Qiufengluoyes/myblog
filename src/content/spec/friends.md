@@ -6,7 +6,7 @@
 - 确保您的网站有价值内容占比较多
 - 不定期检查网站访问情况，若无法访问则会将您的网站从友链列表中暂时移除
 
-申请邮箱：<qiufengluoye@feng1026.top> （请勿使用 Outlook 邮箱发送邮件）
+申请邮箱：<qiufengluoyes@outlook.com>
 
 ## 本站信息
 
@@ -15,7 +15,3 @@
 | 介绍   | 和你的日常，就是奇迹                           |
 | 网址   | https://blog.feng1026.top            |
 | 头像   | https://blog.feng1026.top/avatar.jpg |
-
-
-
-
