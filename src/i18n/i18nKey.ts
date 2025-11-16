@@ -22,6 +22,9 @@ enum I18nKey {
 	animeEmpty = "animeEmpty",
 	animeEmptyBangumi = "animeEmptyBangumi",
 	animeEmptyLocal = "animeEmptyLocal",
+	animeFilterAll = "animeFilterAll",
+	animeStatusOnHold = "animeStatusOnHold",
+	animeStatusDropped = "animeStatusDropped",
 
 	tags = "tags",
 	categories = "categories",

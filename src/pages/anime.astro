@@ -7,18 +7,15 @@ import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
 
 // Bangumi API配置
-const BANGUMI_USER_ID = siteConfig.bangumi?.userId || "your-user-id"; // 用户ID
+const BANGUMI_USER_ID = siteConfig.bangumi?.userId || "your-user-id";
 const BANGUMI_API_BASE = "https://api.bgm.tv";
-
 // 获取番剧数据模式(不需要更改，请在主配置src/config.ts中修改)
 const ANIME_MODE = siteConfig.anime?.mode || "bangumi";
 
 // 获取单个条目相关人员信息
 async function fetchSubjectPersons(subjectId: number) {
 	try {
-		const response = await fetch(
-			`${BANGUMI_API_BASE}/v0/subjects/${subjectId}/persons`,
-		);
+		const response = await fetch(`${BANGUMI_API_BASE}/v0/subjects/${subjectId}/persons`);
 		const data = await response.json();
 		return Array.isArray(data) ? data : [];
 	} catch (error) {
@@ -28,37 +25,23 @@ async function fetchSubjectPersons(subjectId: number) {
 }
 
 // 获取Bangumi收藏列表
-async function fetchBangumiCollection(
-	userId: string,
-	subjectType: number,
-	type: number,
-) {
+async function fetchBangumiCollection(userId: string, subjectType: number, type: number) {
 	try {
 		let allData: any[] = [];
 		let offset = 0;
-		const limit = 50; // 每页获取的数量
+		const limit = 50;
 		let hasMore = true;
 
-		// 循环获取所有数据
 		while (hasMore) {
 			const response = await fetch(
-				`${BANGUMI_API_BASE}/v0/users/${userId}/collections?subject_type=${subjectType}&type=${type}&limit=${limit}&offset=${offset}`,
+				`${BANGUMI_API_BASE}/v0/users/${userId}/collections?subject_type=${subjectType}&type=${type}&limit=${limit}&offset=${offset}`
 			);
-			if (!response.ok) {
-				throw new Error(`Bangumi API error: ${response.status}`);
-			}
-			const data = await response.json();
+			if (!response.ok) throw new Error(`Bangumi API error: ${response.status}`);
 
-			// 添加当前页数据到总数据中
-			if (data.data && data.data.length > 0) {
-				allData = [...allData, ...data.data];
-			}
-			if (!data.data || data.data.length < limit) {
-				hasMore = false;
-			} else {
-				offset += limit;
-			}
-			// 防止请求过于频繁
+			const data = await response.json();
+			if (data.data && data.data.length > 0) allData = [...allData, ...data.data];
+			hasMore = data.data && data.data.length >= limit;
+			if (hasMore) offset += limit;
 			await new Promise((resolve) => setTimeout(resolve, 100));
 		}
 		return { data: allData };
@@ -72,27 +55,20 @@ async function fetchBangumiCollection(
 async function processBangumiData(data: any, status: string) {
 	if (!data || !data.data) return [];
 
-	// 为每个条目获取详细信息
 	const detailedItems = await Promise.all(
 		data.data.map(async (item: any) => {
-			// 获取相关人员信息
 			const subjectPersons = await fetchSubjectPersons(item.subject_id);
-			// 获取年份信息
 			const year = item.subject?.date || "Unknown";
-			// 获取评分
 			const rating = item.rate ? Number.parseFloat(item.rate.toFixed(1)) : 0;
-			// 获取进度信息
 			const progress = item.ep_status || 0;
 			const totalEpisodes = item.subject?.eps || progress;
-			// 从相关人员中获取制作方信息
+
+			// 提取制作方
 			let studio = "Unknown";
 			if (Array.isArray(subjectPersons)) {
-				// 定义筛选优先级顺序
 				const priorities = ["动画制作", "製作", "制作"];
 				for (const relation of priorities) {
-					const match = subjectPersons.find(
-						(person) => person.relation === relation,
-					);
+					const match = subjectPersons.find((person) => person.relation === relation);
 					if (match?.name) {
 						studio = match.name;
 						break;
@@ -105,71 +81,53 @@ async function processBangumiData(data: any, status: string) {
 				status: status,
 				rating: rating,
 				cover: item.subject?.images?.medium || "/assets/anime/default.webp",
-				description: (
-					item.subject?.short_summary ||
-					item.subject?.name_cn ||
-					""
-				).trimStart(),
+				description: (item.subject?.short_summary || item.subject?.name_cn || "").trimStart(),
 				episodes: `${totalEpisodes} episodes`,
 				year: year,
-				genre: item.subject?.tags
-					? item.subject.tags.slice(0, 3).map((tag: any) => tag.name)
-					: ["Unknown"],
+				genre: item.subject?.tags ? item.subject.tags.slice(0, 3).map((tag: any) => tag.name) : ["Unknown"],
 				studio: studio,
-				link: `https://bgm.tv/subject/${item.subject.id}` || "#",
+				link: item.subject?.id ? `https://bgm.tv/subject/${item.subject.id}` : "#",
 				progress: progress,
 				totalEpisodes: totalEpisodes,
 				startDate: item.subject?.date || "",
 				endDate: item.subject?.date || "",
 			};
-		}),
+		})
 	);
 	return detailedItems;
 }
 
-// 根据模式获取番剧列表
-let animeList = [];
+// 获取番剧列表
+let animeList: typeof localAnimeList = [];
 if (ANIME_MODE === "local") {
-	// 使用本地配置
 	animeList = localAnimeList;
 } else {
-	// 使用Bangumi API（默认模式）
-	// 获取与处理在看列表（type=3）看过列表（type=2）
 	const watchingData = await fetchBangumiCollection(BANGUMI_USER_ID, 2, 3);
 	const completedData = await fetchBangumiCollection(BANGUMI_USER_ID, 2, 2);
-
-	const watchingList = watchingData
-		? await processBangumiData(watchingData, "watching")
-		: [];
-	const completedList = completedData
-		? await processBangumiData(completedData, "completed")
-		: [];
-
+	const watchingList = watchingData ? await processBangumiData(watchingData, "watching") : [];
+	const completedList = completedData ? await processBangumiData(completedData, "completed") : [];
 	animeList = [...watchingList, ...completedList];
 }
 
-// 获取状态的翻译文本和样式
+// 获取状态样式与文本
 function getStatusInfo(status: string) {
 	switch (status) {
 		case "watching":
 			return {
 				text: i18n(I18nKey.animeStatusWatching),
-				class:
-					"bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+				class: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
 				icon: "▶",
 			};
 		case "completed":
 			return {
 				text: i18n(I18nKey.animeStatusCompleted),
-				class:
-					"bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+				class: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
 				icon: "✓",
 			};
 		case "planned":
 			return {
 				text: i18n(I18nKey.animeStatusPlanned),
-				class:
-					"bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+				class: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
 				icon: "⏰",
 			};
 		default:
@@ -181,18 +139,14 @@ function getStatusInfo(status: string) {
 	}
 }
 
-// 计算统计数据
+// 统计数据
 const stats = {
 	total: animeList.length,
 	watching: animeList.filter((anime) => anime.status === "watching").length,
 	completed: animeList.filter((anime) => anime.status === "completed").length,
 	avgRating: (() => {
 		const ratedAnime = animeList.filter((anime) => anime.rating > 0);
-		if (ratedAnime.length === 0) return "0.0";
-		return (
-			ratedAnime.reduce((sum, anime) => sum + anime.rating, 0) /
-			ratedAnime.length
-		).toFixed(1);
+		return ratedAnime.length === 0 ? "0.0" : (ratedAnime.reduce((sum, anime) => sum + anime.rating, 0) / ratedAnime.length).toFixed(1);
 	})(),
 };
 ---
@@ -203,12 +157,16 @@ const stats = {
       <!-- 页面标题 -->
       <div class="relative w-full mb-8">
         <div class="mb-6">
-          <h1 class="text-4xl font-bold text-black/90 dark:text-white/90 mb-2">{i18n(I18nKey.animeTitle)}</h1>
+          <h1 class="text-4xl font-bold text-black/90 dark:text-white/90 mb-2 relative
+                    before:w-1 before:h-8 before:rounded-md before:bg-[var(--primary)]
+                    before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4">
+            {i18n(I18nKey.animeTitle)}
+          </h1>
           <p class="text-black/75 dark:text-white/75">{i18n(I18nKey.animeSubtitle)}</p>
         </div>
-        
+
         <!-- 统计卡片 -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg p-4">
             <div class="flex items-center gap-3">
               <div class="text-2xl">📊</div>
@@ -246,23 +204,31 @@ const stats = {
             </div>
           </div>
         </div>
+
+        <!-- 过滤按钮 -->
+        <div class="mb-6">
+          <div class="filter-container flex flex-wrap gap-2">
+            <button class="filter-tag active" data-status="all">{i18n(I18nKey.animeFilterAll)}</button>
+            <button class="filter-tag" data-status="watching">{i18n(I18nKey.animeStatusWatching)}</button>
+            <button class="filter-tag" data-status="completed">{i18n(I18nKey.animeStatusCompleted)}</button>
+            <button class="filter-tag" data-status="planned">{i18n(I18nKey.animeStatusPlanned)}</button>
+            {ANIME_MODE === 'bangumi' && (
+              <>
+                <button class="filter-tag" data-status="onhold">{i18n(I18nKey.animeStatusOnHold)}</button>
+                <button class="filter-tag" data-status="dropped">{i18n(I18nKey.animeStatusDropped)}</button>
+              </>
+            )}
+          </div>
+        </div>
       </div>
 
       <!-- 动漫列表 -->
       <div class="mb-8">
-        <h2 class="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">
-          {i18n(I18nKey.animeList)}
-        </h2>
-        
         {ANIME_MODE !== 'local' && BANGUMI_USER_ID === 'your-user-id' ? (
           <div class="text-center py-12">
             <div class="text-5xl mb-4">😢</div>
-            <h3 class="text-xl font-medium text-black/80 dark:text-white/80 mb-2">
-              {i18n(I18nKey.animeEmpty)}
-            </h3>
-            <p class="text-black/60 dark:text-white/60">
-              请在 src/config.ts 文件中设置你的 Bangumi 用户ID
-            </p>
+            <h3 class="text-xl font-medium text-black/80 dark:text-white/80 mb-2">{i18n(I18nKey.animeEmpty)}</h3>
+            <p class="text-black/60 dark:text-white/60">请在 src/config.ts 文件中设置你的 Bangumi 用户ID</p>
           </div>
         ) : animeList.length > 0 ? (
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
@@ -271,8 +237,8 @@ const stats = {
               const progressPercent = anime.totalEpisodes > 0 ? (anime.progress / anime.totalEpisodes) * 100 : 0;
               
               return (
-                <div class="group relative bg-[var(--card-bg)] border border-[var(--line-divider)] rounded-[var(--radius-large)] overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
-                  <!-- 封面区域 - 竖屏比例 -->
+                <div class="group relative bg-[var(--card-bg)] border border-[var(--line-divider)] rounded-[var(--radius-large)] overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02]" data-anime-status={anime.status}>
+                  <!-- 封面区域 -->
                   <div class="relative aspect-[2/3] overflow-hidden">
                     <a href={anime.link} target="_blank" rel="noopener noreferrer" class="block w-full h-full">
                       <ImageWrapper 
@@ -305,7 +271,7 @@ const stats = {
                       <span>{anime.rating}</span>
                     </div>
                     
-                    <!-- 进度条 - 在封面底部 -->
+                    <!-- 进度条 -->
                     {anime.status === 'watching' && (
                       <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
                         <div class="w-full bg-white/20 rounded-full h-1.5 mb-1">
@@ -318,12 +284,11 @@ const stats = {
                     )}
                   </div>
                   
-                  <!-- 内容区域 - 紧凑设计 -->
+                  <!-- 内容区域 -->
                   <div class="p-3">
                     <h3 class="text-sm font-bold text-black/90 dark:text-white/90 mb-1 line-clamp-2 leading-tight">{anime.title}</h3>
                     <p class="text-black/60 dark:text-white/60 text-xs mb-2 line-clamp-2">{anime.description}</p>
                     
-                    <!-- 详细信息 - 更紧凑 -->
                     <div class="space-y-1 text-xs">
                       <div class="flex justify-between">
                         <span class="text-black/50 dark:text-white/50">{i18n(I18nKey.animeYear)}</span>
@@ -347,9 +312,7 @@ const stats = {
         ) : (
           <div class="text-center py-12">
             <div class="text-5xl mb-4">😢</div>
-            <h3 class="text-xl font-medium text-black/80 dark:text-white/80 mb-2">
-              {i18n(I18nKey.animeEmpty)}
-            </h3>
+            <h3 class="text-xl font-medium text-black/80 dark:text-white/80 mb-2">{i18n(I18nKey.animeEmpty)}</h3>
             <p class="text-black/60 dark:text-white/60">
               {ANIME_MODE === 'local' ? i18n(I18nKey.animeEmptyLocal) : i18n(I18nKey.animeEmptyBangumi)}
             </p>
@@ -358,4 +321,221 @@ const stats = {
       </div>
     </div>
   </div>
+
+  <!-- 样式 -->
+  <style>
+    .filter-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .filter-tag {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--line-divider);
+      border-radius: var(--radius-large);
+      background: var(--btn-regular-bg);
+      color: var(--btn-content);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    
+    .filter-tag:hover:not(.active) {
+      background: var(--btn-hover-bg);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+    
+    .filter-tag.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    .filter-tag.active:hover {
+      background: var(--primary) !important;
+      color: white !important;
+      border-color: var(--primary) !important;
+      transform: translateY(-1px);
+    }
+    
+    /* 番剧卡片动画 */
+    [data-anime-status] {
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    [data-anime-status].anime-hidden {
+      display: none;
+    }
+    
+    [data-anime-status].anime-animating {
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    [data-anime-status].anime-fade-out {
+      opacity: 0;
+      transform: scale(0.8);
+      pointer-events: none;
+      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    [data-anime-status].anime-fade-in {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    
+    [data-anime-status].anime-fade-in-active {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+
+  <!-- 过滤功能脚本 -->
+  <script is:inline>
+    let filterEventListeners = [];
+    
+    function initFilterButtons() {
+      const filterTags = document.querySelectorAll('.filter-tag');
+      
+      // 移除旧监听
+      filterEventListeners.forEach(([element, type, handler]) => {
+        element.removeEventListener(type, handler);
+      });
+      filterEventListeners = [];
+      
+      // 绑定新监听
+      filterTags.forEach(tag => {
+        const clickHandler = function() {
+          if (this.classList.contains('active')) return;
+          
+          filterTags.forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+          
+          const status = this.getAttribute('data-status');
+          const animeItems = Array.from(document.querySelectorAll('[data-anime-status]'));
+          
+          // FLIP动画：记录初始位置
+          const firstPositions = new Map();
+          animeItems.forEach(item => {
+            const rect = item.getBoundingClientRect();
+            firstPositions.set(item, { left: rect.left, top: rect.top });
+          });
+          
+          // 分类卡片
+          const itemsToHide = [];
+          const itemsToShow = [];
+          const itemsToKeep = [];
+          
+          animeItems.forEach(item => {
+            const itemStatus = item.getAttribute('data-anime-status');
+            const shouldShow = status === 'all' || itemStatus === status;
+            const isVisible = !item.classList.contains('anime-hidden');
+            
+            if (shouldShow) {
+              isVisible ? itemsToKeep.push(item) : itemsToShow.push(item);
+            } else if (isVisible) {
+              itemsToHide.push(item);
+            }
+          });
+          
+          // 隐藏卡片淡出
+          itemsToHide.forEach(item => item.classList.add('anime-fade-out'));
+          
+          // 等待淡出完成
+          setTimeout(() => {
+            // 完全隐藏卡片
+            itemsToHide.forEach(item => {
+              item.classList.add('anime-hidden');
+              item.classList.remove('anime-fade-out');
+            });
+            
+            // 准备显示新卡片
+            itemsToShow.forEach(item => {
+              item.classList.remove('anime-hidden');
+              item.classList.add('anime-fade-in');
+              item.style.opacity = '0';
+              item.style.transform = 'scale(0.8)';
+              item.style.transition = 'none';
+            });
+            
+            // 记录最终位置
+            requestAnimationFrame(() => {
+              const lastPositions = new Map();
+              [...itemsToKeep, ...itemsToShow].forEach(item => {
+                const rect = item.getBoundingClientRect();
+                lastPositions.set(item, { left: rect.left, top: rect.top });
+              });
+              
+              // 反向变换
+              itemsToKeep.forEach(item => {
+                const first = firstPositions.get(item);
+                const last = lastPositions.get(item);
+                if (first && last) {
+                  const deltaX = first.left - last.left;
+                  const deltaY = first.top - last.top;
+                  item.style.transition = 'none';
+                  item.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+                }
+              });
+              
+              // 执行动画
+              requestAnimationFrame(() => {
+                [...itemsToKeep, ...itemsToShow].forEach((item, index) => {
+                  setTimeout(() => {
+                    item.classList.add('anime-animating');
+                    if (itemsToKeep.includes(item)) {
+                      item.style.transition = '';
+                      item.style.transform = '';
+                    } else {
+                      item.classList.remove('anime-fade-in');
+                      item.classList.add('anime-fade-in-active');
+                      item.style.transition = '';
+                      item.style.opacity = '1';
+                      item.style.transform = 'scale(1)';
+                    }
+                  }, index * 20);
+                });
+                
+                // 清理动画类
+                setTimeout(() => {
+                  [...itemsToKeep, ...itemsToShow].forEach(item => {
+                    item.classList.remove('anime-animating', 'anime-fade-in-active');
+                    item.style.transition = '';
+                    item.style.transform = '';
+                    item.style.opacity = '';
+                  });
+                }, 500 + [...itemsToKeep, ...itemsToShow].length * 20);
+              });
+            });
+          }, 300);
+        };
+        
+        tag.addEventListener('click', clickHandler);
+        filterEventListeners.push([tag, 'click', clickHandler]);
+      });
+    }
+    
+    // 页面加载初始化
+    document.addEventListener('DOMContentLoaded', initFilterButtons);
+    
+    // Swup页面切换兼容
+    function setupSwupListeners() {
+      if (window.swup) {
+        window.swup.hooks.on('content:replace', () => setTimeout(initFilterButtons, 150));
+        window.swup.hooks.on('page:view', () => setTimeout(initFilterButtons, 150));
+        window.swup.hooks.on('animation:in:end', () => setTimeout(initFilterButtons, 200));
+      }
+    }
+    
+    if (typeof window !== 'undefined') {
+      if (window.swup) {
+        setupSwupListeners();
+      } else {
+        document.addEventListener('swup:enable', setupSwupListeners);
+      }
+    }
+  </script>
 </MainGridLayout>
