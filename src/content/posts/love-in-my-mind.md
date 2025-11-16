@@ -6,7 +6,6 @@ image: 'https://image.091026.xyz/blog/love-in-my-mind-0.webp'
 tags: [爱, 她]
 category: '随笔'
 draft: false
-pinned: true
 ---
 
 <p align="center">
