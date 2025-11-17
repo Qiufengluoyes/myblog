@@ -1,10 +1,10 @@
 ---
-title: 「惜福」序幕 —— 意想不到的初识
+title: 「惜」序幕 —— 意想不到的初识
 published: 2025-11-17
 description: '「同步老文章」：这里，是这篇小说的开始，本人在闲暇之余会进行这部小说的写作，一定保持更新，大概……（?）'
 image: ''
 tags: [小说, 校园, 温暖, 爱]
-category: '「惜福」'
+category: '「惜」'
 draft: false
 lang: ''
 pinned: true
