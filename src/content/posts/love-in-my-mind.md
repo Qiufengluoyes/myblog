@@ -5,9 +5,8 @@ description: '愿相爱的人各得其所，愿放逐的人终获解脱 —— �
 image: 'https://image.091026.xyz/blog/love-in-my-mind-0.webp'
 tags: [爱, 她]
 category: '随笔'
-draft: false
+draft: true
 ---
-
 <p align="center">
 	<audio src="https://fengblog.s3.bitiful.net/music/%E5%B0%8F%E5%A4%9C%E7%81%AF%20-%20%E7%81%B0%E6%BE%88.mp3" controlsList="nodownload" oncontextmenu="return false" preload="auto" controls="controls" loop autoplay>
 	</audio>
@@ -16,7 +15,6 @@ draft: false
 var audio = document.querySelector('audio');
 audio.volume = 0.5;
 </script>
-
 
 <p align="center">灰澈——小夜灯</p>
 
@@ -61,6 +59,3 @@ audio.volume = 0.5;
 ::link-card{url="https://www.bilibili.com/video/BV1ngpHzvEwR/" title="哔哩哔哩 - 我探索了一座废弃小学" description="林角小学现状探访"}
 
 ::link-card{url="https://www.bilibili.com/video/BV1c4sHzrEUU/" title="哔哩哔哩 - 此间少年事（定稿）" description="家长会特辑"}
-
-
-
