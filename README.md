@@ -98,12 +98,3 @@ This project is licensed under the MIT License.
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fsaicaca%2Ffuwari.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fsaicaca%2Ffuwari?ref=badge_large&issueType=license)
 
----
-
-# 身份存储库
-
-姓名：**胡紫慧**
-
-**✨** 身份证号码：**430611201001160042【女 | 2010年1月16日 | 湖南省 岳阳市 君山区】**
-
-**✨**  出生地：**湖南省岳阳市君山区**
